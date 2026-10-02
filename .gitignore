@@ -13,13 +13,16 @@ __pycache__/
 # Staged USB packages (regenerate with scripts/package-usb.ps1; ~1.2 GB)
 artifacts/
 
-# Generated assessment output
+# Generated assessment output (keep the directory placeholders, not the output)
 output/
-reports/*
+reports/**
+!reports/**/
 !reports/**/.gitkeep
-evidence/*
+evidence/**
+!evidence/**/
 !evidence/**/.gitkeep
-logs/*
+logs/**
+!logs/**/
 !logs/**/.gitkeep
 
 # Signing material must never be committed

@@ -34,7 +34,16 @@ def cmd_list(a):
 def cmd_run(a):
     cfg = Config(ROOT, a.profile)
     lc = cfg.logging
-    logging.basicConfig(filename=ROOT / lc["file"], level=lc["level"], format=lc["format"])
+    log_path = ROOT / lc["file"]
+    # The log directory may be absent in a fresh checkout or on read-only removable media; create it
+    # rather than failing the run, and fall back to stderr if the file still cannot be opened.
+    try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        logging.basicConfig(filename=log_path, level=lc["level"], format=lc["format"])
+    except OSError as exc:
+        logging.basicConfig(level=lc["level"], format=lc["format"],
+                            stream=sys.stderr)
+        print(f"warning: could not open log file {log_path}: {exc}", file=sys.stderr)
     flaws = [f for f in (a.flaw or "").split(",") if f]
     usb = dict(vid=_hex(a.vid), pid=_hex(a.pid), serial=a.serial)
     dev = make_device(a.device or cfg.toolkit.get("default_device", "sim"), cfg, flaws, usb)
