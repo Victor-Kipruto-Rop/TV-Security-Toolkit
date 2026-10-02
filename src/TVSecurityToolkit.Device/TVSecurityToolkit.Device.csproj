@@ -1,8 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>TVSecurityToolkit.Device</RootNamespace>
-    <!-- LibUsbDotNet 2.2.x is a managed .NET Framework-era package; it restores fine with this warning suppressed. -->
-    <NoWarn>$(NoWarn);NU1701</NoWarn>
+    <!--
+      NU1701 (package restored using .NET Framework assets) was previously suppressed here.
+      The suppression has been removed: LibUsbDotNet 2.2.29 ships netstandard1.6, netstandard2.0,
+      netcoreapp2.0 and net45 targets, so it resolves against net10.0 via netstandard2.0 and the
+      warning does not fire. Verified by a forced restore and a Release build of the full solution
+      with 0 warnings. Do not re-add the suppression; if NU1701 ever appears again, fix the package
+      version instead of hiding the warning.
+    -->
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="LibUsbDotNet" />

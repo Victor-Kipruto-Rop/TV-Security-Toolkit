@@ -1,3 +1,11 @@
 {
-  "failThreshold": "Medium"
+  "failThreshold": "Medium",
+  "levels": [
+    "info",
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ],
+  "fail_threshold": "medium"
 }

@@ -1,0 +1,18 @@
+# Python dependencies for the TV Security Toolkit CLI.
+#
+# The core CLI and simulator deliberately have NO third-party dependencies: everything imported by
+# `toolkit/` and `tests/python/` outside the standard library is stdlib only. This file exists so that
+# the absence is declared and reviewable rather than accidental, and so an SBOM can enumerate the
+# dependency set (Phase 42).
+#
+# Standard library modules used: argparse, base64, contextlib, hashlib, io, itertools, json,
+# pathlib, string, sys, time, types, unittest.
+#
+# Optional extras:
+#   USB transport  -> pip install -r requirements-usb.txt   (pyusb + a native libusb)
+#                     also requires the libusb 1.x native library on the host.
+#
+# Supported interpreter: CPython 3.10 or later. Verified on CPython 3.13.15.
+#
+# This file is intentionally free of pinned requirements. Adding one here without a reason, a
+# justification, and a review of the transitive set is not allowed.

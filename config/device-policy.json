@@ -1,3 +1,4 @@
 {
-  "allowStateChanging": true
+  "allowStateChanging": true,
+  "allow_state_changing": true
 }

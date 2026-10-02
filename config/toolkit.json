@@ -1,5 +1,7 @@
 {
   "name": "TV-Security-Toolkit",
   "defaultEnvironment": "development",
-  "outputDir": "output"
+  "outputDir": "output",
+  "default_profile": "development",
+  "default_device": "sim"
 }

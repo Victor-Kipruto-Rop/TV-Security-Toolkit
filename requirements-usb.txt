@@ -1,0 +1,17 @@
+# Optional USB transport dependencies for the Python CLI.
+#
+# Required only for `--device usb` and for `python launcher.py devices`. The simulator, the
+# usb-loopback adapter, and the whole test suite run without these.
+#
+# `toolkit/device/transport.py` imports pyusb lazily inside the transport methods and raises an
+# actionable error ("pyusb not installed: pip install pyusb (and install libusb)") when it is absent,
+# so the toolkit degrades cleanly rather than failing to start.
+#
+# pyusb is a pure-Python binding; it also needs a native libusb 1.x implementation on the host
+# (libusb-win32 or libusbK on Windows, libusb-1.0 on Linux, libusb on macOS via Homebrew).
+# Neither can be installed from this file.
+#
+# Scope: this pins the one third-party Python dependency the project uses. Current release: 1.3.1
+# (requires Python >= 3.9). No transitive Python dependencies.
+
+pyusb==1.3.1

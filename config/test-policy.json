@@ -1,4 +1,11 @@
 {
   "testTimeoutSeconds": 60,
-  "stopOnCriticalFailure": false
+  "stopOnCriticalFailure": false,
+  "required_fields": [
+    "title",
+    "severity",
+    "steps"
+  ],
+  "max_steps_per_test": 20,
+  "stop_on_critical_failure": false
 }

@@ -1,12 +1,42 @@
 #!/usr/bin/env python3
-"""Regenerates config/, profiles/, schemas/ and tests/ JSON. Run from the toolkit root."""
+"""Regenerates config/, profiles/, schemas/ and tests/ JSON. Run from the toolkit root.
+
+The .NET application and the Python CLI read the same configuration files but with different key
+conventions (camelCase versus snake_case) and, in places, different semantics. This generator owns
+the Python view. It therefore MERGES into any existing file rather than replacing it, so running it
+can never delete a key that only the .NET application reads.
+
+Reconciliation of the two conventions into one canonical model is tracked for Phase 5; until then the
+merge behaviour is what keeps the generator safe to run.
+"""
 import json, secrets
 from pathlib import Path
 R = Path(__file__).resolve().parent.parent
 
-def w(rel, obj):
-    p = R / rel; p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(obj, indent=2) + "\n")
+def w(rel, obj, create_only=False):
+    """Write JSON, preserving any keys already present in the target file.
+
+    Keys present in the generated object win. Keys that exist only in the file on disk are kept, so
+    generating assets can never silently strip configuration another component depends on.
+
+    `create_only=True` leaves an existing file completely untouched. It is used for the JSON schemas,
+    where the .NET application is authoritative and the two implementations' required-field lists are
+    genuinely incompatible (`id` versus `testId`, `deviceId` versus `device_id`). Reconciling them is
+    a separate, deliberate change; silently overwriting the committed schema is not acceptable.
+    """
+    p = R / rel
+    p.parent.mkdir(parents=True, exist_ok=True)
+    if create_only and p.exists():
+        return
+    merged = obj
+    if p.exists():
+        try:
+            existing = json.loads(p.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            existing = None
+        if isinstance(existing, dict) and isinstance(obj, dict):
+            merged = {**existing, **obj}
+    p.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
 
 # ---------------- config ----------------
 # config/security-policy.json is the single source of truth for the lab signing key, shared with the
@@ -41,7 +71,7 @@ w("drivers/usb/driver-manifest.json", {"drivers": []}); w("drivers/serial/driver
 for n, req in {"test": ["title", "severity", "steps"], "result": ["id", "status"], "finding": ["id", "severity", "message"],
                "device": ["device_id", "model"], "entitlement": ["device_id", "nonce", "issued_at", "expires_at", "sig"],
                "firmware": ["model", "hardware", "version"], "report": ["meta", "summary", "results"]}.items():
-    w(f"schemas/{n}.schema.json", {"$schema": "http://json-schema.org/draft-07/schema#", "type": "object", "required": req})
+    w(f"schemas/{n}.schema.json", {"$schema": "http://json-schema.org/draft-07/schema#", "type": "object", "required": req}, create_only=True)
 
 # ---------------- tests ----------------
 E = lambda **k: {"$entitlement": k}
