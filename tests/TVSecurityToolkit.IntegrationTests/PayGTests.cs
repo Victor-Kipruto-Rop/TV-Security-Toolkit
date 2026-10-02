@@ -8,7 +8,13 @@ public class PayGTests
     public async Task Correct_device_passes_every_catalog_test()
     {
         var report = await Harness.RunAsync();
-        Assert.Equal(48, report.Total);
+
+        // Derived from the registry the harness actually loads, so adding a catalog test cannot leave a
+        // stale hardcoded expectation behind. This previously asserted a literal count and failed once
+        // the catalog grew.
+        var catalogCount = Harness.LoadRegistry().Definitions.Count;
+        Assert.Equal(catalogCount, report.Total);
+
         Assert.All(report.Session.Results, r => Assert.True(r.Status == TestStatus.Pass, $"{r.Id}: {r.Message}"));
     }
 
