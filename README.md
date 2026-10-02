@@ -48,6 +48,23 @@ python -m unittest discover -s tests/python -v
 The CLI uses `config/toolkit.json`'s `defaultEnvironment` when no profile is specified. Hardware runs should
 explicitly select the appropriate profile and device.
 
+### Device adapters and their maturity
+
+The Python CLI is **simulator-first and is not validated against real hardware**. Check the adapter you select
+before relying on any result:
+
+| `--device` | Status | Notes |
+| --- | --- | --- |
+| `sim` | Usable | Built-in simulator. Results are synthetic and prove nothing about a real TV. |
+| `usb-loopback` | Usable | Exercises the full USB protocol path against the simulator. No hardware required. |
+| `usb` | Unverified | Real USB transport. The wire protocol is an **assumption** — no authorized TV has been tested. |
+| `generic` | **Not implemented** | `toolkit/device/generic.py` is a skeleton that raises `NotImplementedError` by design. |
+
+`generic` deliberately fails closed rather than returning fabricated results. It is the correct extension point
+for a real serial/network adapter, but it must be written against the vendor's actual protocol specification and
+the approved device authentication model; neither is available yet. No `generic` result may be reported as
+hardware evidence, and a `PASS` from the simulator is not evidence that a production TV rejects the same condition.
+
 ## USB devices
 Plug the TV in, open **Device**, choose *Usb*, enter VID/PID and the bulk endpoint numbers (decimal; 0x81 = 129).
 On Windows the device needs a WinUSB/libusb driver (e.g. via Zadig). The wire protocol is an assumption: adapt
