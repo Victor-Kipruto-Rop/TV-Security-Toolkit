@@ -64,7 +64,7 @@ def cmd_run(a):
     return exit_code(results, fail_threshold.lower())
 
 def cmd_gen_payloads(a):
-    cfg = Config(ROOT); key = bytes.fromhex(cfg.security["lab_signing_key_hex"])
+    cfg = Config(ROOT); key = bytes.fromhex(cfg.lab_key_hex)
     S, T0 = SimulatedTvAdapter, SimulatedTvAdapter.T0
     P = ROOT / "payloads"
     def wj(rel, obj): (P / rel).write_text(json.dumps(obj, indent=2))

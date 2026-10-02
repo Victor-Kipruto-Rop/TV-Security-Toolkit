@@ -7,7 +7,7 @@ from .transport import UsbTransport, LoopbackTransport
 from .usb_adapter import UsbTvAdapter
 
 def make_device(name, cfg, flaws=(), usb=None):
-    key = bytes.fromhex(cfg.security["lab_signing_key_hex"])
+    key = bytes.fromhex(cfg.lab_key_hex)
     if name == "sim":
         return SimulatedTvAdapter(key, flaws)
     if name == "usb-loopback":  # full USB protocol path against the simulator, no hardware

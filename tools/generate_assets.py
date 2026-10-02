@@ -9,13 +9,17 @@ def w(rel, obj):
     p.write_text(json.dumps(obj, indent=2) + "\n")
 
 # ---------------- config ----------------
-key_file = R / "config/security.json"
-key = json.loads(key_file.read_text())["lab_signing_key_hex"] if key_file.exists() else secrets.token_hex(32)
+# config/security-policy.json is the single source of truth for the lab signing key, shared with the
+# .NET toolkit. It is preserved if present: regenerating assets must never silently produce a new key,
+# which would make the Python CLI and the .NET app disagree about what the simulator signed with.
+policy_file = R / "config/security-policy.json"
+existing = json.loads(policy_file.read_text()) if policy_file.exists() else {}
+key = existing.get("labSigningKeyHex") or secrets.token_hex(32)
 w("config/toolkit.json", {"name": "TV-Security-Toolkit", "default_profile": "development", "default_device": "sim"})
 w("config/environment.json", {"payloads_dir": "payloads", "reports_dir": "reports", "evidence_dir": "evidence"})
 w("config/logging.json", {"level": "INFO", "file": "logs/tests/toolkit.log", "format": "%(asctime)s %(levelname)s %(message)s"})
-w("config/security.json", {"lab_signing_key_hex": key,
-   "note": "LAB key for the simulated device only. Never place production signing keys here."})
+w("config/security-policy.json", {"labSigningKeyHex": key, "minTlsVersion": "1.2",
+   "note": "LAB key for the simulator only. Never place production signing keys here."})
 w("config/device-policy.json", {"allow_state_changing": True})
 w("config/test-policy.json", {"required_fields": ["title", "severity", "steps"], "max_steps_per_test": 20,
    "stop_on_critical_failure": False})

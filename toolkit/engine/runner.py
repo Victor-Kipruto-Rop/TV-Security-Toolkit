@@ -64,7 +64,7 @@ def resolve(v, dev, ctx):
 class Runner:
     def __init__(self, cfg, device, policy):
         self.cfg, self.dev, self.policy = cfg, device, policy
-        self.ctx = {"payloads": cfg.root / "payloads", "key": bytes.fromhex(cfg.security["lab_signing_key_hex"])}
+        self.ctx = {"payloads": cfg.root / "payloads", "key": bytes.fromhex(cfg.lab_key_hex)}
 
     def run(self, tests):
         results = []

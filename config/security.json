@@ -1,4 +1,0 @@
-{
-  "lab_signing_key_hex": "ebd99753669010e6fca9ee8736154a628cfcf009e43293e6c8a0f9c3d8d6ba33",
-  "note": "LAB key for the simulated device only. Never place production signing keys here."
-}
