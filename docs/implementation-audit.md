@@ -62,15 +62,35 @@ The build foundation now targets .NET 10.0.401 with analyzers and deterministic 
 
 - The shared build properties target **.NET 10**; `global.json` selects SDK 10.0.401 with latest-patch roll-forward.
 - Nullable references and implicit usings are enabled; package versions are centrally declared in [`Directory.Packages.props`](../Directory.Packages.props). The device and unit-test projects suppress `NU1701`; that compatibility warning should be reviewed rather than assumed harmless.
-- The repository includes xUnit unit/integration projects and a Python `unittest` suite. The unit suite now contains 90 tests. Its most recent execution on the authoring host reported 46 passing and 44 failing, and **all 44 failures were Application Control blocks (0x800711C7) of a dependent assembly rather than logic failures**, so no pass is claimed for the final state. The earlier full integration pass was 12 tests and predates the dependency-scheduling and isolation work. Both suites must be executed on a host without that policy, or on CI, before any pass is claimed. The Release solution build succeeds with 0 warnings and 0 errors.
+- The repository includes xUnit unit/integration projects and a Python `unittest` suite. The unit suite contains 90 tests and the integration suite 12. The most recent Release run on the authoring host reported **87 passing and 3 failing of 90**; the blocking Application Control policy on that host makes results vary between runs, so a stable figure requires a host without that policy, or CI. The 12 integration tests have not been re-executed since the device-reset isolation work. The Release solution build succeeds with 0 warnings and 0 errors. See [GitHub Actions status](#github-actions-status) for the CI position.
 - The WPF design system is verified statically. `XamlResourceTests` parses every view and resource dictionary and asserts that each `StaticResource`/`BasedOn` reference resolves, that each keyed style is applied to a matching element type, that the required brushes exist, and that no view hardcodes a colour. Those checks are part of the blocked suite above; the same assertions were also executed directly against the source files and passed. Running the application confirmed the dashboard, test-execution, and reports pages render, and exposed a `TextBox` style applied to a `ListBox` that compile-time checks had not caught.
-- `dotnet list package --vulnerable --include-transitive` reported no vulnerable NuGet packages from the current sources. GitHub Actions workflows are present but have not yet run on GitHub.
+- `dotnet list package --vulnerable --include-transitive` reported no vulnerable NuGet packages from the current sources.
+
 - The expanded adapter-enabled USB package was staged and copied to the user-confirmed `D:\TV-Security-Toolkit` folder; all 599 package files matched their staged SHA-256 hashes. The redesigned Release package was subsequently staged at `artifacts/TV-Security-Toolkit-USB-Redesigned` and is ready to copy to removable media. The packaged application previously launched from D: and remained responsive while its startup log confirmed toolkit initialization. The package includes the launcher, package-relative output path, runtime/config/catalog data, Android/Tizen/webOS tool discovery, and Roku ECP probe UI. One pre-existing destination file was preserved. A clean-machine launch, code-signing, USB-media durability, and real-TV workflow remain unverified.
 - `cmake` and the Visual C++ compiler were unavailable; no native firmware source was identified.
+
+## GitHub Actions status
+
+The repository is published at `github.com/Victor-Kipruto-Rop/TV-Security-Toolkit` and the workflows have now been triggered. **Every job fails before a runner is assigned**, so there is no CI build or test result in either direction:
+
+| Workflow | Job | Duration | Steps executed | Runner |
+| --- | --- | --- | --- | --- |
+| Test | `python` | 2 s | 0 | none (`runner_id: 0`) |
+| Test | `dotnet` | 1 s | 0 | none |
+| Security | `dependency-audit` | 4 s | 0 | none |
+| Security | `codeql` | 4 s | 0 | none |
+| Build | `build` | 5 s | 0 | none |
+
+A 1–5 second failure with an empty `steps` array and no assigned runner is the signature of a job rejected during scheduling, not a build or test failure. This points to an account or organisation setting (Actions enablement, spending limit, or pending billing) rather than a defect in this repository, and it cannot be resolved from the working tree. Enabling Actions for the account and re-running is the next action, and it is a human step.
+
+One genuine repository defect was found and fixed while reproducing the `python` job locally. A fresh clone has no `logs/tests/` directory, so `toolkit/cli.py` raised `FileNotFoundError` from `logging.basicConfig` before any test could run. The directory is now created on demand, with a stderr fallback for read-only removable media, and the `.gitkeep` placeholders for `logs/`, `reports/`, and `evidence/` are tracked. In a fresh clone the Python suite reports `Ran 6 tests ... OK`, and the .NET solution builds with 0 warnings and 0 errors.
+
+On the authoring host, a Release `dotnet test` reported **87 passing and 3 failing of 90**. Two were Application Control blocks (`0x800711C7`) of `TVSecurityToolkit.Tests.PayG.dll`; which tests are blocked varies between runs as reputation is evaluated. The third, `TcpTransportTests.Call_fails_promptly_when_peer_closes_connection`, is a **pre-existing flaky test that predates this work** (unchanged since the initial commit): it times out under full-suite load and passes in isolation in under one second. That is a timing sensitivity in the test harness, not a confirmed transport defect, and it should be stabilised before being relied on as a regression guard. The 12 integration tests have still not been re-executed since `ResetAsync` was introduced.
 
 ## Security and release considerations
 
 - The repository states that payloads are lab-signed and the configured key is simulator-only. Keep it out of any production trust configuration; do not treat possession of the lab key as device authorization.
+- **The lab key is now public.** `config/security-policy.json` and `config/security.json` are tracked and the repository is public, so `labSigningKeyHex` is world-readable. This is acceptable only while it signs simulator payloads exclusively, and it must never be reused for evidence attestation, package signing, or device authentication. The production profile does not currently refuse to load a lab key, so this separation is a code-level control that is **not** yet enforced; treat "lab key present" as a hard stop for any production run.
 - Never use simulator PASS results as evidence that a production TV rejects the same condition.
 - Do not run state-changing checks against production devices. The policy default is now read-only when the setting is absent; confirm the selected profile and policy behavior at the engine boundary before any authorized hardware assessment.
 - Avoid collecting customer or payment data. Validate redaction against actual report/evidence contents before release.
@@ -79,8 +99,8 @@ The build foundation now targets .NET 10.0.401 with analyzers and deterministic 
 ## Recommended implementation order
 
 1. **Obtain a publicly trusted code-signing certificate** and configure the protected signing secrets. This is the gating item: unsigned packages do not start on machines with Smart App Control enabled, so it blocks both distribution and clean-machine testing. The packaging script supports `-SigningCertificatePath -RequireSigned` and was exercised end to end against a locally generated certificate.
-2. **Run the workflows on GitHub** and resolve hosted-runner differences. The repository is not currently under version control, so the workflows have never executed. CI also provides a host without the authoring machine's Application Control policy, which is currently preventing the unit and integration suites from running at all.
-3. **Execute the full suites on that host.** The most recent run on the authoring machine executed 90 unit tests with 46 passing and 44 failing, and every one of those 44 failures was an Application Control block of a dependent assembly rather than a logic failure; no pass is claimed for the final state.
+2. **Enable GitHub Actions for the account and re-run the workflows.** The repository is now published and the workflows execute, but all five jobs are rejected during scheduling with no runner assigned (1–5 s, zero steps). This is an account or organisation setting rather than a repository defect, and it must be fixed before CI can be used as evidence. CI also provides a host without the authoring machine's Application Control policy, which is currently preventing part of the unit and integration suites from running.
+3. **Execute the full suites on a host without Application Control** (the CI host once Actions is enabled). The latest authoring-host run was 87 passing and 3 failing of 90, and 2 of the 3 failures are policy blocks rather than logic failures; the third is a pre-existing flaky TCP test. Re-run all 90 unit and 12 integration tests there and record the result.
 4. Define the supported TV diagnostic protocol and production device-authentication/trust model with the device/platform owner. Validate them on an explicitly authorized development TV before claiming hardware coverage.
 5. Decide whether to complete or remove the Python `generic` adapter placeholder, and document the Python CLI as simulator-only until then.
 6. Complete authorized-device end-to-end verification and finalize production-readiness evidence. Do not deploy firmware automatically.
