@@ -1,0 +1,21 @@
+{
+  "title": "Entitlement for another device rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "device": "OTHER-9999",
+            "nonce": "nonce-other-1"
+          }
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "device_mismatch"
+      }
+    }
+  ]
+}

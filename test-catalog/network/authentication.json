@@ -1,0 +1,47 @@
+{
+  "category": "network",
+  "group": "authentication",
+  "tests": [
+    {
+      "id": "network.authentication.authentication",
+      "title": "Unauthenticated API call rejected",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "api_call",
+          "args": {
+            "credential": "valid"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "call": "api_call",
+          "args": {
+            "credential": "none"
+          },
+          "expect": {
+            "status": 401
+          }
+        }
+      ]
+    },
+    {
+      "id": "network.authentication.expired-credential",
+      "title": "Expired credential rejected",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "api_call",
+          "args": {
+            "credential": "expired"
+          },
+          "expect": {
+            "status": 401
+          }
+        }
+      ]
+    }
+  ]
+}

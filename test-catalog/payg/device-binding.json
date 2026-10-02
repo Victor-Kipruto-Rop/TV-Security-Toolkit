@@ -1,0 +1,48 @@
+{
+  "category": "payg",
+  "group": "device-binding",
+  "tests": [
+    {
+      "id": "payg.device-binding.device-mismatch",
+      "title": "Entitlement for another device rejected",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "device": "OTHER-9999",
+                "nonce": "nonce-other-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "device_mismatch"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.device-binding.device-binding",
+      "title": "Entitlement bound to this device accepted",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": "nonce-bind-01"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        }
+      ]
+    }
+  ]
+}

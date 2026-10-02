@@ -1,0 +1,12 @@
+{
+  "categories": [
+    "firmware",
+    "payg",
+    "update",
+    "network",
+    "local",
+    "usb",
+    "recovery"
+  ],
+  "deny": []
+}

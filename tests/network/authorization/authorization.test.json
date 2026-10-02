@@ -1,0 +1,26 @@
+{
+  "title": "Admin endpoint denied to normal user",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "api_call",
+      "args": {
+        "endpoint": "/admin/config",
+        "role": "user"
+      },
+      "expect": {
+        "status": 403
+      }
+    },
+    {
+      "call": "api_call",
+      "args": {
+        "endpoint": "/admin/config",
+        "role": "admin"
+      },
+      "expect": {
+        "status": 200
+      }
+    }
+  ]
+}

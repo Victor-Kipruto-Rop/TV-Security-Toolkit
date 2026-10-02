@@ -1,0 +1,17 @@
+{
+  "title": "Hardware revision compatibility check",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "check_compatibility",
+      "args": {
+        "model": "SIM-TV-55",
+        "hardware": "rev-Z",
+        "region": "KE"
+      },
+      "expect": {
+        "compatible": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "vid": null,
+  "pid": null,
+  "serial": null,
+  "interface": 0,
+  "ep_out": 1,
+  "ep_in": 129,
+  "timeout_s": 5.0
+}

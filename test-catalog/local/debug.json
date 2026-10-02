@@ -1,0 +1,36 @@
+{
+  "category": "local",
+  "group": "debug",
+  "tests": [
+    {
+      "id": "local.debug.debug-interface",
+      "title": "Debug interfaces disabled in production",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "debug_probe",
+          "args": {},
+          "expect": {
+            "uart_shell_open": false,
+            "jtag_enabled": false,
+            "debug_port_listening": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "local.debug.diagnostic-access",
+      "title": "Diagnostics require authentication",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "diagnostic_access_probe",
+          "args": {},
+          "expect": {
+            "unauthenticated_access": false
+          }
+        }
+      ]
+    }
+  ]
+}

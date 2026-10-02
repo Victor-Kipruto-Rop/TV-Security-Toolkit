@@ -1,0 +1,19 @@
+<UserControl x:Class="TVSecurityToolkit.App.Views.ReportsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <StackPanel MaxWidth="600" HorizontalAlignment="Left">
+    <TextBlock Text="Reports" Style="{StaticResource Title}" />
+    <TextBlock Text="Generate reports from the last completed run. Reports and evidence are written to the configured output folder." Style="{StaticResource Subtitle}" Margin="0,0,0,12" />
+    <TextBlock Text="Formats" Style="{StaticResource FieldLabel}" />
+    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+      <CheckBox Content="HTML" IsChecked="{Binding UseHtml}" Margin="0,0,20,0" />
+      <CheckBox Content="JSON" IsChecked="{Binding UseJson}" Margin="0,0,20,0" />
+      <CheckBox Content="PDF" IsChecked="{Binding UsePdf}" />
+    </StackPanel>
+    <WrapPanel>
+      <Button Content="Generate from last run" Command="{Binding GenerateCommand}" />
+      <Button Content="Open reports folder" Command="{Binding OpenFolderCommand}" Style="{StaticResource SecondaryButton}" />
+      <Button Content="Open evidence folder" Command="{Binding OpenEvidenceFolderCommand}" Style="{StaticResource SecondaryButton}" />
+    </WrapPanel>
+    <TextBlock Text="Generated files" Style="{StaticResource FieldLabel}" />
+    <ListBox ItemsSource="{Binding Generated}" MinHeight="140" Style="{StaticResource MonoList}" />
+  </StackPanel>
+</UserControl>

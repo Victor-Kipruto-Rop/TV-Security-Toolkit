@@ -1,0 +1,34 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Style x:Key="Card" TargetType="Border">
+    <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BorderBrushLight}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusMd}" />
+    <Setter Property="Padding" Value="20" />
+    <Setter Property="Margin" Value="0,0,14,14" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Effect" Value="{StaticResource CardShadowHover}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <!-- Compact metric tile used on the dashboard summary row -->
+  <Style x:Key="MetricCard" TargetType="Border" BasedOn="{StaticResource Card}">
+    <Setter Property="Padding" Value="18,16" />
+    <Setter Property="Margin" Value="0,0,12,12" />
+    <Setter Property="MinWidth" Value="150" />
+  </Style>
+
+  <Style x:Key="Panel" TargetType="Border">
+    <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BorderBrushLight}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusLg}" />
+    <Setter Property="Padding" Value="22" />
+    <Setter Property="Effect" Value="{StaticResource CardShadow}" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+  </Style>
+</ResourceDictionary>

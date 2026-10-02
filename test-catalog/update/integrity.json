@@ -1,0 +1,47 @@
+{
+  "category": "update",
+  "group": "integrity",
+  "tests": [
+    {
+      "id": "update.integrity.corrupted-package",
+      "title": "Truncated package rejected",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@corrupted/corrupted-manifest.json"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "malformed"
+          }
+        },
+        {
+          "call": "info",
+          "args": {},
+          "expect": {
+            "fw_version": "1.4.0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "update.integrity.hash-mismatch",
+      "title": "Package with altered body rejected",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@corrupted/corrupted-update.pkg"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "hash_mismatch"
+          }
+        }
+      ]
+    }
+  ]
+}

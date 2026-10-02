@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>TVSecurityToolkit.Security</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TVSecurityToolkit.Core\TVSecurityToolkit.Core.csproj" />
+  </ItemGroup>
+</Project>

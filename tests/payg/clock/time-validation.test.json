@@ -1,0 +1,34 @@
+{
+  "title": "Device locks after entitlement time passes",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "expires": 3600,
+            "nonce": "nonce-time-01"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "advance",
+      "args": {
+        "seconds": 7200
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false,
+        "mode": "locked"
+      }
+    }
+  ]
+}

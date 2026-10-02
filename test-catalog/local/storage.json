@@ -1,0 +1,34 @@
+{
+  "category": "local",
+  "group": "storage",
+  "tests": [
+    {
+      "id": "local.storage.sensitive-storage",
+      "title": "Sensitive data stored encrypted",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "storage_audit",
+          "args": {},
+          "expect": {
+            "unencrypted_sensitive_files": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "local.storage.permission",
+      "title": "No world-readable sensitive files",
+      "severity": "medium",
+      "steps": [
+        {
+          "call": "storage_audit",
+          "args": {},
+          "expect": {
+            "world_readable_files": 0
+          }
+        }
+      ]
+    }
+  ]
+}

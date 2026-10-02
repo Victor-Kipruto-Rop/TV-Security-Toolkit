@@ -1,0 +1,23 @@
+{
+  "title": "Valid signed entitlement accepted",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": "@valid/valid-entitlement.json"
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": true,
+        "mode": "active"
+      }
+    }
+  ]
+}

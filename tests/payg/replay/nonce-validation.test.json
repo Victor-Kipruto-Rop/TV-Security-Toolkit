@@ -1,0 +1,20 @@
+{
+  "title": "Empty/short nonce rejected",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "nonce": ""
+          }
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "invalid_nonce"
+      }
+    }
+  ]
+}

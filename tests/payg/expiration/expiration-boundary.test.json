@@ -1,0 +1,46 @@
+{
+  "title": "Entitlement lapses exactly at expiry",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "expires": 60,
+            "nonce": "nonce-bound-1"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "advance",
+      "args": {
+        "seconds": 59
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": true
+      }
+    },
+    {
+      "call": "advance",
+      "args": {
+        "seconds": 1
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false
+      }
+    }
+  ]
+}

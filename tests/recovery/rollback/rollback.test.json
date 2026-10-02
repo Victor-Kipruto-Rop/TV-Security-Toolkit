@@ -1,0 +1,23 @@
+{
+  "title": "Rollback restores previous firmware",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "apply_update",
+      "args": {
+        "package": "@valid/valid-update.pkg"
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "rollback",
+      "args": {},
+      "expect": {
+        "rolled_back": true,
+        "running_version": "1.4.0"
+      }
+    }
+  ]
+}

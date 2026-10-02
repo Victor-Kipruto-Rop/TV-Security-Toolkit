@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>TVSecurityToolkit.Engine</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TVSecurityToolkit.Core\TVSecurityToolkit.Core.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Security\TVSecurityToolkit.Security.csproj" />
+  </ItemGroup>
+</Project>

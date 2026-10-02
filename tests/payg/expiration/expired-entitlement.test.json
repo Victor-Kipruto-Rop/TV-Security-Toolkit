@@ -1,0 +1,24 @@
+{
+  "title": "Expired entitlement rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": "@expired/expired-entitlement.json"
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "expired"
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false,
+        "mode": "locked"
+      }
+    }
+  ]
+}

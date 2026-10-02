@@ -1,0 +1,62 @@
+{
+  "category": "update",
+  "group": "recovery",
+  "tests": [
+    {
+      "id": "update.recovery.interrupted-update",
+      "title": "Interrupted update leaves device bootable",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": {
+              "$package": {}
+            },
+            "interrupt": true
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "interrupted",
+            "bootable": true,
+            "running_version": "1.4.0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "update.recovery.failed-update-recovery",
+      "title": "Device recovers after failed update",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@corrupted/corrupted-update.pkg"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "hash_mismatch"
+          }
+        },
+        {
+          "call": "boot",
+          "args": {},
+          "expect": {
+            "booted": true,
+            "running_version": "1.4.0"
+          }
+        },
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@valid/valid-update.pkg"
+          },
+          "expect": {
+            "accepted": true
+          }
+        }
+      ]
+    }
+  ]
+}

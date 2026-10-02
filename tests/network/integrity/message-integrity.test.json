@@ -1,0 +1,17 @@
+{
+  "title": "Tampered protocol message rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "send_message",
+      "args": {
+        "seq": 5,
+        "tamper": true
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "bad_mac"
+      }
+    }
+  ]
+}

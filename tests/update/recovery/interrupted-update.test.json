@@ -1,0 +1,21 @@
+{
+  "title": "Interrupted update leaves device bootable",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_update",
+      "args": {
+        "package": {
+          "$package": {}
+        },
+        "interrupt": true
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "interrupted",
+        "bootable": true,
+        "running_version": "1.4.0"
+      }
+    }
+  ]
+}

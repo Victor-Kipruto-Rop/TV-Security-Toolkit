@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+          global-json-file: global.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Restore
+        run: dotnet restore TV-Security-Toolkit.sln
+      - name: Build Release
+        run: dotnet build TV-Security-Toolkit.sln --configuration Release --no-restore
+      - name: Python CLI tests
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python -m unittest discover -s tests/python -v

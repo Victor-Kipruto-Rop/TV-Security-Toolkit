@@ -1,0 +1,16 @@
+{
+  "title": "Technician cannot factory-reset via API",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "api_call",
+      "args": {
+        "endpoint": "/admin/factory-reset",
+        "role": "technician"
+      },
+      "expect": {
+        "status": 403
+      }
+    }
+  ]
+}

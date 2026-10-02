@@ -1,0 +1,31 @@
+# Build output
+bin/
+obj/
+.vs/
+*.user
+.vscode/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Staged USB packages (regenerate with scripts/package-usb.ps1; ~1.2 GB)
+artifacts/
+
+# Generated assessment output
+output/
+reports/*
+!reports/**/.gitkeep
+evidence/*
+!evidence/**/.gitkeep
+logs/*
+!logs/**/.gitkeep
+
+# Signing material must never be committed
+*.pfx
+*.p12
+*.pem
+*.key
+*.pvk
+*.cer

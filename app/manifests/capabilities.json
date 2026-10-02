@@ -1,0 +1,7 @@
+{
+  "capabilities": [
+    "run-tests",
+    "generate-reports",
+    "validate-packages"
+  ]
+}

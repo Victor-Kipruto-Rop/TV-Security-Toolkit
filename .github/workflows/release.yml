@@ -1,0 +1,61 @@
+name: Release package
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package-and-sign:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+          global-json-file: global.json
+      - name: Build and sign USB package
+        shell: pwsh
+        env:
+          SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
+          SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:SIGNING_CERTIFICATE_BASE64) -or
+              [string]::IsNullOrWhiteSpace($env:SIGNING_CERTIFICATE_PASSWORD)) {
+            throw "Protected signing certificate secrets are required for a release."
+          }
+          $certificatePath = Join-Path $env:RUNNER_TEMP "release-signing.pfx"
+          try {
+            [IO.File]::WriteAllBytes($certificatePath, [Convert]::FromBase64String($env:SIGNING_CERTIFICATE_BASE64))
+            # -RequireSigned makes the run fail if any shipped binary is unsigned or untrusted,
+            # so an unsigned package can never be published.
+            ./scripts/package-usb.ps1 `
+              -OutputDirectory "${{ runner.temp }}\TV-Security-Toolkit-USB" `
+              -SigningCertificatePath $certificatePath `
+              -RequireSigned
+          }
+          finally {
+            Remove-Item -LiteralPath $certificatePath -Force -ErrorAction SilentlyContinue
+            Remove-Item Env:SIGNING_CERTIFICATE_BASE64 -ErrorAction SilentlyContinue
+            Remove-Item Env:SIGNING_CERTIFICATE_PASSWORD -ErrorAction SilentlyContinue
+          }
+      - name: Verify packaged signatures
+        shell: pwsh
+        run: ./scripts/verify-package-signatures.ps1 -PackagePath "${{ runner.temp }}\TV-Security-Toolkit-USB"
+      - name: Archive USB package
+        shell: pwsh
+        run: Compress-Archive -Path "${{ runner.temp }}\\TV-Security-Toolkit-USB\\*" -DestinationPath "${{ runner.temp }}\\TV-Security-Toolkit-USB.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TV-Security-Toolkit-USB
+          path: ${{ runner.temp }}\TV-Security-Toolkit-USB.zip
+          if-no-files-found: error
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ runner.temp }}\TV-Security-Toolkit-USB.zip

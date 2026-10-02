@@ -1,0 +1,82 @@
+{
+  "category": "payg",
+  "group": "clock",
+  "tests": [
+    {
+      "id": "payg.clock.time-validation",
+      "title": "Device locks after entitlement time passes",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "expires": 3600,
+                "nonce": "nonce-time-01"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "advance",
+          "args": {
+            "seconds": 7200
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": false,
+            "mode": "locked"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.clock.time-integrity",
+      "title": "Clock rollback does not re-extend entitlement",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "expires": 86400,
+                "nonce": "nonce-clock-01"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "advance",
+          "args": {
+            "seconds": 43200
+          }
+        },
+        {
+          "call": "set_clock",
+          "args": {
+            "delta": -43200
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": false,
+            "reason": "clock_tamper"
+          }
+        }
+      ]
+    }
+  ]
+}

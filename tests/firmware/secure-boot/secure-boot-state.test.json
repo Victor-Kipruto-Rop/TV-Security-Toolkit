@@ -1,0 +1,14 @@
+{
+  "title": "Secure boot enabled and locked",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "secure_boot_state",
+      "args": {},
+      "expect": {
+        "enabled": true,
+        "locked": true
+      }
+    }
+  ]
+}

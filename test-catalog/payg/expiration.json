@@ -1,0 +1,101 @@
+{
+  "category": "payg",
+  "group": "expiration",
+  "tests": [
+    {
+      "id": "payg.expiration.expired-entitlement",
+      "title": "Expired entitlement rejected",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": "@expired/expired-entitlement.json"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "expired"
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": false,
+            "mode": "locked"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.expiration.future-entitlement",
+      "title": "Entitlement issued in the future rejected",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "issued": 3600,
+                "expires": 90000,
+                "nonce": "nonce-future-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "not_yet_valid"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.expiration.expiration-boundary",
+      "title": "Entitlement lapses exactly at expiry",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "expires": 60,
+                "nonce": "nonce-bound-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "advance",
+          "args": {
+            "seconds": 59
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": true
+          }
+        },
+        {
+          "call": "advance",
+          "args": {
+            "seconds": 1
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": false
+          }
+        }
+      ]
+    }
+  ]
+}

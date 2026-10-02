@@ -1,0 +1,13 @@
+{
+  "title": "Installed firmware hash matches approved reference",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "firmware_hash",
+      "args": {},
+      "expect": {
+        "matches_reference": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "title": "TLS rejects wrong host and legacy protocol",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "tls_connect",
+      "args": {
+        "scenario": "valid"
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "tls_connect",
+      "args": {
+        "scenario": "wrong_host"
+      },
+      "expect": {
+        "accepted": false
+      }
+    },
+    {
+      "call": "tls_connect",
+      "args": {
+        "scenario": "tls10"
+      },
+      "expect": {
+        "accepted": false
+      }
+    }
+  ]
+}

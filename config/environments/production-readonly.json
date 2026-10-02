@@ -1,0 +1,15 @@
+{
+  "name": "production-readonly",
+  "allowedCategories": [
+    "firmware",
+    "payg",
+    "update",
+    "network",
+    "local",
+    "recovery",
+    "usb"
+  ],
+  "denyTests": [],
+  "allowStateChanging": false,
+  "enforceReadOnlyCommandAllowlist": true
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Factory reset wipes data and stays locked",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "nonce": "nonce-frst-01"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "factory_reset",
+      "args": {},
+      "expect": {
+        "ok": true,
+        "wiped": true
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false,
+        "mode": "locked"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "No world-readable sensitive files",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "storage_audit",
+      "args": {},
+      "expect": {
+        "world_readable_files": 0
+      }
+    }
+  ]
+}

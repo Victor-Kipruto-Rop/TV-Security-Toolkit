@@ -1,0 +1,17 @@
+{
+  "title": "Altered USB package rejected",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_update",
+      "args": {
+        "package": "@corrupted/corrupted-firmware.pkg",
+        "source": "usb"
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "hash_mismatch"
+      }
+    }
+  ]
+}

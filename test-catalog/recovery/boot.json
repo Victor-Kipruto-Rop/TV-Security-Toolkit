@@ -1,0 +1,32 @@
+{
+  "category": "recovery",
+  "group": "boot",
+  "tests": [
+    {
+      "id": "recovery.boot.boot-validation",
+      "title": "Corrupt boot image falls back to recovery",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "boot",
+          "args": {
+            "image": "corrupt"
+          },
+          "expect": {
+            "booted": false,
+            "fallback": "recovery"
+          }
+        },
+        {
+          "call": "boot",
+          "args": {
+            "image": "valid"
+          },
+          "expect": {
+            "booted": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "devices": [
+    {
+      "deviceId": "SIM-0001",
+      "model": "SIM-TV-55",
+      "hardware": "rev-B",
+      "region": "KE"
+    }
+  ]
+}

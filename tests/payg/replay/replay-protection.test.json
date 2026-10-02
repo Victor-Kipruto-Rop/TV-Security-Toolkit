@@ -1,0 +1,33 @@
+{
+  "title": "Replayed entitlement rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "nonce": "nonce-replay-1"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "nonce": "nonce-replay-1"
+          }
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "replay"
+      }
+    }
+  ]
+}

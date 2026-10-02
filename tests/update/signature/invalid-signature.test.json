@@ -1,0 +1,23 @@
+{
+  "title": "Package with bad signature rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_update",
+      "args": {
+        "package": "@invalid/invalid-signature.pkg"
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "invalid_signature"
+      }
+    },
+    {
+      "call": "info",
+      "args": {},
+      "expect": {
+        "fw_version": "1.4.0"
+      }
+    }
+  ]
+}

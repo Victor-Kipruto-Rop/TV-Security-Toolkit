@@ -1,0 +1,24 @@
+{
+  "title": "Entitlement with bad signature rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": "@invalid/invalid-entitlement.json"
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "bad_signature"
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false,
+        "mode": "locked"
+      }
+    }
+  ]
+}

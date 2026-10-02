@@ -1,0 +1,93 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.App", "src\TVSecurityToolkit.App\TVSecurityToolkit.App.csproj", "{D6A31253-630B-5D10-A693-8FD31688C32C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Core", "src\TVSecurityToolkit.Core\TVSecurityToolkit.Core.csproj", "{CBD955C0-A376-5636-B070-EBB6B7567BA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Engine", "src\TVSecurityToolkit.Engine\TVSecurityToolkit.Engine.csproj", "{284F13C2-6D3A-5502-B95D-611DB62CEF0B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Device", "src\TVSecurityToolkit.Device\TVSecurityToolkit.Device.csproj", "{BAE26DBE-DE4E-5195-A498-4FC1403F6CA6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Security", "src\TVSecurityToolkit.Security\TVSecurityToolkit.Security.csproj", "{560F1CBC-766B-51C1-9900-8E222F53AB9E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Reporting", "src\TVSecurityToolkit.Reporting\TVSecurityToolkit.Reporting.csproj", "{07B89DA8-0FA4-5259-AD6A-9621E55B5234}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Tests.PayG", "src\TVSecurityToolkit.Tests.PayG\TVSecurityToolkit.Tests.PayG.csproj", "{17A0C5D1-269A-5C0B-874A-04930D5EA92B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Tests.Firmware", "src\TVSecurityToolkit.Tests.Firmware\TVSecurityToolkit.Tests.Firmware.csproj", "{3A0384E9-B332-5359-A317-BA4ED30EB882}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Tests.Update", "src\TVSecurityToolkit.Tests.Update\TVSecurityToolkit.Tests.Update.csproj", "{2A91CFE4-8AC5-545B-B1BB-D4091D598FB2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Tests.Network", "src\TVSecurityToolkit.Tests.Network\TVSecurityToolkit.Tests.Network.csproj", "{5316AF46-891C-58A7-9DD0-297E6A136767}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.Tests.Local", "src\TVSecurityToolkit.Tests.Local\TVSecurityToolkit.Tests.Local.csproj", "{F39CF483-59E2-583E-A513-C54F1969E983}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.UnitTests", "tests\TVSecurityToolkit.UnitTests\TVSecurityToolkit.UnitTests.csproj", "{5570308A-1C65-54E3-AB73-485117EEE18E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TVSecurityToolkit.IntegrationTests", "tests\TVSecurityToolkit.IntegrationTests\TVSecurityToolkit.IntegrationTests.csproj", "{28BCA3F9-379A-5C15-9A2D-0AC543644DBA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6A31253-630B-5D10-A693-8FD31688C32C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A31253-630B-5D10-A693-8FD31688C32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A31253-630B-5D10-A693-8FD31688C32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A31253-630B-5D10-A693-8FD31688C32C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBD955C0-A376-5636-B070-EBB6B7567BA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD955C0-A376-5636-B070-EBB6B7567BA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD955C0-A376-5636-B070-EBB6B7567BA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD955C0-A376-5636-B070-EBB6B7567BA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{284F13C2-6D3A-5502-B95D-611DB62CEF0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{284F13C2-6D3A-5502-B95D-611DB62CEF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{284F13C2-6D3A-5502-B95D-611DB62CEF0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{284F13C2-6D3A-5502-B95D-611DB62CEF0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAE26DBE-DE4E-5195-A498-4FC1403F6CA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAE26DBE-DE4E-5195-A498-4FC1403F6CA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAE26DBE-DE4E-5195-A498-4FC1403F6CA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAE26DBE-DE4E-5195-A498-4FC1403F6CA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{560F1CBC-766B-51C1-9900-8E222F53AB9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{560F1CBC-766B-51C1-9900-8E222F53AB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{560F1CBC-766B-51C1-9900-8E222F53AB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{560F1CBC-766B-51C1-9900-8E222F53AB9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07B89DA8-0FA4-5259-AD6A-9621E55B5234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07B89DA8-0FA4-5259-AD6A-9621E55B5234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07B89DA8-0FA4-5259-AD6A-9621E55B5234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07B89DA8-0FA4-5259-AD6A-9621E55B5234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A0C5D1-269A-5C0B-874A-04930D5EA92B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A0C5D1-269A-5C0B-874A-04930D5EA92B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A0C5D1-269A-5C0B-874A-04930D5EA92B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A0C5D1-269A-5C0B-874A-04930D5EA92B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A0384E9-B332-5359-A317-BA4ED30EB882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A0384E9-B332-5359-A317-BA4ED30EB882}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A0384E9-B332-5359-A317-BA4ED30EB882}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A0384E9-B332-5359-A317-BA4ED30EB882}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A91CFE4-8AC5-545B-B1BB-D4091D598FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A91CFE4-8AC5-545B-B1BB-D4091D598FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A91CFE4-8AC5-545B-B1BB-D4091D598FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A91CFE4-8AC5-545B-B1BB-D4091D598FB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5316AF46-891C-58A7-9DD0-297E6A136767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5316AF46-891C-58A7-9DD0-297E6A136767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5316AF46-891C-58A7-9DD0-297E6A136767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5316AF46-891C-58A7-9DD0-297E6A136767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F39CF483-59E2-583E-A513-C54F1969E983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F39CF483-59E2-583E-A513-C54F1969E983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F39CF483-59E2-583E-A513-C54F1969E983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F39CF483-59E2-583E-A513-C54F1969E983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5570308A-1C65-54E3-AB73-485117EEE18E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5570308A-1C65-54E3-AB73-485117EEE18E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5570308A-1C65-54E3-AB73-485117EEE18E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5570308A-1C65-54E3-AB73-485117EEE18E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28BCA3F9-379A-5C15-9A2D-0AC543644DBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28BCA3F9-379A-5C15-9A2D-0AC543644DBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28BCA3F9-379A-5C15-9A2D-0AC543644DBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28BCA3F9-379A-5C15-9A2D-0AC543644DBA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,13 @@
+{
+  "title": "Boot chain verifies end to end",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "verify_boot_chain",
+      "args": {},
+      "expect": {
+        "ok": true
+      }
+    }
+  ]
+}

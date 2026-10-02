@@ -1,0 +1,40 @@
+{
+  "title": "Clock rollback does not re-extend entitlement",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "expires": 86400,
+            "nonce": "nonce-clock-01"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "advance",
+      "args": {
+        "seconds": 43200
+      }
+    },
+    {
+      "call": "set_clock",
+      "args": {
+        "delta": -43200
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false,
+        "reason": "clock_tamper"
+      }
+    }
+  ]
+}

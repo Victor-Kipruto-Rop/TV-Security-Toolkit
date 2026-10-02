@@ -1,0 +1,13 @@
+{
+  "title": "Installed firmware signature is valid",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "installed_signature",
+      "args": {},
+      "expect": {
+        "valid": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Unsupported firmware version rejected",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "validate_version",
+      "args": {
+        "version": "0.9.0"
+      },
+      "expect": {
+        "supported": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Diagnostics require authentication",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "diagnostic_access_probe",
+      "args": {},
+      "expect": {
+        "unauthenticated_access": false
+      }
+    }
+  ]
+}

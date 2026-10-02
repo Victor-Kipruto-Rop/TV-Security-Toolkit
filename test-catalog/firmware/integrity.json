@@ -1,0 +1,34 @@
+{
+  "category": "firmware",
+  "group": "integrity",
+  "tests": [
+    {
+      "id": "firmware.integrity.firmware-hash",
+      "title": "Installed firmware hash matches approved reference",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "firmware_hash",
+          "args": {},
+          "expect": {
+            "matches_reference": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "firmware.integrity.signature-validation",
+      "title": "Installed firmware signature is valid",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "installed_signature",
+          "args": {},
+          "expect": {
+            "valid": true
+          }
+        }
+      ]
+    }
+  ]
+}

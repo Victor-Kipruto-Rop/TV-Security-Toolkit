@@ -1,0 +1,5 @@
+{
+  "labSigningKeyHex": "ebd99753669010e6fca9ee8736154a628cfcf009e43293e6c8a0f9c3d8d6ba33",
+  "minTlsVersion": "1.2",
+  "note": "LAB key for the simulator only. Never place production signing keys here."
+}

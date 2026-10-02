@@ -1,0 +1,37 @@
+{
+  "category": "usb",
+  "group": "malformed",
+  "tests": [
+    {
+      "id": "usb.malformed.malformed-package",
+      "title": "Malformed USB package rejected",
+      "severity": "medium",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@invalid/invalid-manifest.json",
+            "source": "usb"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "malformed"
+          }
+        },
+        {
+          "call": "apply_update",
+          "args": {
+            "package": {
+              "$bytes": "garbage\u0000ÿ"
+            },
+            "source": "usb"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "malformed"
+          }
+        }
+      ]
+    }
+  ]
+}

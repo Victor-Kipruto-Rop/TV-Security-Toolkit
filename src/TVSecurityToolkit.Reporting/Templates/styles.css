@@ -1,0 +1,5 @@
+body{font-family:system-ui,Segoe UI,sans-serif;max-width:860px;margin:1rem auto;padding:0 1rem;color:#222}
+.card{border:1px solid #ddd;border-radius:8px;padding:.6rem .9rem;margin:.5rem 0}
+.summary span{display:inline-block;margin-right:1rem}
+.critical{border-left:5px solid #b00020}.high{border-left:5px solid #e65100}.medium{border-left:5px solid #f9a825}
+.low,.info{border-left:5px solid #888}.meta,code{font-size:.85rem;color:#666}

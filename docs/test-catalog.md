@@ -1,0 +1,50 @@
+# Test catalog
+
+- `firmware.compatibility.model-validation` [medium] Model compatibility check
+- `firmware.compatibility.hardware-validation` [medium] Hardware revision compatibility check
+- `firmware.compatibility.region-validation` [medium] Region compatibility check
+- `firmware.integrity.firmware-hash` [critical] Installed firmware hash matches approved reference
+- `firmware.integrity.signature-validation` [critical] Installed firmware signature is valid
+- `firmware.rollback.rollback-protection` [high] Rollback protection is enforced
+- `firmware.secure-boot.secure-boot-state` [critical] Secure boot enabled and locked
+- `firmware.secure-boot.boot-chain` [critical] Boot chain verifies end to end
+- `firmware.version.version-validation` [medium] Supported firmware version accepted
+- `firmware.version.unsupported-version` [medium] Unsupported firmware version rejected
+- `local.credentials.credential-storage` [high] No plaintext or hardcoded credentials
+- `local.debug.debug-interface` [high] Debug interfaces disabled in production
+- `local.debug.diagnostic-access` [high] Diagnostics require authentication
+- `local.logs.sensitive-log-data` [medium] Logs contain no sensitive data
+- `local.storage.sensitive-storage` [high] Sensitive data stored encrypted
+- `local.storage.permission` [medium] No world-readable sensitive files
+- `network.authentication.authentication` [critical] Unauthenticated API call rejected
+- `network.authentication.expired-credential` [high] Expired credential rejected
+- `network.authorization.authorization` [critical] Admin endpoint denied to normal user
+- `network.authorization.privilege-boundary` [high] Technician cannot factory-reset via API
+- `network.integrity.message-integrity` [critical] Tampered protocol message rejected
+- `network.replay.message-replay` [high] Replayed protocol message rejected
+- `network.tls.tls-validation` [high] TLS rejects wrong host and legacy protocol
+- `network.tls.certificate-validation` [critical] TLS rejects expired/self-signed/revoked certs
+- `payg.clock.time-validation` [high] Device locks after entitlement time passes
+- `payg.clock.time-integrity` [critical] Clock rollback does not re-extend entitlement
+- `payg.device-binding.device-mismatch` [critical] Entitlement for another device rejected
+- `payg.device-binding.device-binding` [high] Entitlement bound to this device accepted
+- `payg.entitlement.valid-entitlement` [high] Valid signed entitlement accepted
+- `payg.entitlement.invalid-entitlement` [critical] Entitlement with bad signature rejected
+- `payg.entitlement.malformed-entitlement` [high] Malformed entitlement rejected
+- `payg.expiration.expired-entitlement` [critical] Expired entitlement rejected
+- `payg.expiration.future-entitlement` [high] Entitlement issued in the future rejected
+- `payg.expiration.expiration-boundary` [high] Entitlement lapses exactly at expiry
+- `payg.factory-reset.reset-security` [critical] Factory reset keeps replay protection
+- `payg.factory-reset.state-recovery` [medium] Device accepts fresh entitlement after reset
+- `payg.offline.offline-grace` [high] Offline grace period is bounded
+- `payg.offline.reconnect` [medium] Reconnect after lapse needs fresh entitlement
+- `payg.replay.replay-protection` [critical] Replayed entitlement rejected
+- `payg.replay.nonce-validation` [high] Empty/short nonce rejected
+- `update.compatibility.wrong-model-update` [high] Update for other model/hardware rejected
+- `update.downgrade.downgrade-protection` [high] Signed downgrade rejected
+- `update.integrity.corrupted-package` [high] Truncated package rejected
+- `update.integrity.hash-mismatch` [critical] Package with altered body rejected
+- `update.recovery.interrupted-update` [critical] Interrupted update leaves device bootable
+- `update.recovery.failed-update-recovery` [high] Device recovers after failed update
+- `update.signature.invalid-signature` [critical] Package with bad signature rejected
+- `update.valid.valid-update` [high] Valid signed update installs

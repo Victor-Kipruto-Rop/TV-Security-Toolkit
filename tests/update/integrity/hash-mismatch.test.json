@@ -1,0 +1,16 @@
+{
+  "title": "Package with altered body rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_update",
+      "args": {
+        "package": "@corrupted/corrupted-firmware.pkg"
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "hash_mismatch"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Logs contain no sensitive data",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "log_audit",
+      "args": {},
+      "expect": {
+        "sensitive_matches": 0
+      }
+    }
+  ]
+}

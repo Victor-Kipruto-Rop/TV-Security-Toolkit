@@ -1,0 +1,62 @@
+<UserControl x:Class="TVSecurityToolkit.App.Views.DeviceView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+  <StackPanel MaxWidth="720" HorizontalAlignment="Left">
+    <TextBlock Text="Device" Style="{StaticResource Title}" />
+    <TextBlock Text="Connect a target and review what discovery can and cannot establish." Style="{StaticResource Subtitle}" Margin="0,0,0,10" />
+    <TextBlock Text="Connection type" Style="{StaticResource FieldLabel}" />
+    <ComboBox ItemsSource="{Binding ConnectionTypes}" SelectedItem="{Binding SelectedType}" />
+    <StackPanel Visibility="{Binding IsSimulator, Converter={StaticResource BoolToVis}}">
+      <TextBlock Text="Disabled protections (comma-separated, optional; e.g. accept_replay)" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+      <TextBox Text="{Binding Flaws, UpdateSourceTrigger=PropertyChanged}" />
+    </StackPanel>
+    <StackPanel Visibility="{Binding IsUsb, Converter={StaticResource BoolToVis}}">
+      <TextBlock Text="Vendor ID (e.g. 0x1234)" Style="{StaticResource FieldLabel}" /><TextBox Text="{Binding Vid, UpdateSourceTrigger=PropertyChanged}" />
+      <TextBlock Text="Product ID (e.g. 0x5678)" Style="{StaticResource FieldLabel}" /><TextBox Text="{Binding Pid, UpdateSourceTrigger=PropertyChanged}" />
+      <TextBlock Text="Bulk OUT endpoint (decimal or 0x..)" Style="{StaticResource FieldLabel}" /><TextBox Text="{Binding EpOut, UpdateSourceTrigger=PropertyChanged}" />
+      <TextBlock Text="Bulk IN endpoint (decimal or 0x.., 0x81 = 129)" Style="{StaticResource FieldLabel}" /><TextBox Text="{Binding EpIn, UpdateSourceTrigger=PropertyChanged}" />
+    </StackPanel>
+    <StackPanel Visibility="{Binding IsSerial, Converter={StaticResource BoolToVis}}">
+      <TextBlock Text="Serial port" Style="{StaticResource FieldLabel}" /><TextBox Text="{Binding SerialPortName, UpdateSourceTrigger=PropertyChanged}" />
+    </StackPanel>
+    <StackPanel Visibility="{Binding IsNetwork, Converter={StaticResource BoolToVis}}">
+      <TextBlock Text="Host (or http://... URL)" Style="{StaticResource FieldLabel}" /><TextBox Text="{Binding Host, UpdateSourceTrigger=PropertyChanged}" />
+      <TextBlock Text="Port" Style="{StaticResource FieldLabel}" /><TextBox Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}" />
+    </StackPanel>
+    <WrapPanel Margin="0,6,0,0">
+      <Button Content="Connect" Command="{Binding ConnectCommand}" />
+      <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Style="{StaticResource SecondaryButton}" />
+      <Button Content="Discover" Command="{Binding DiscoverCommand}" Style="{StaticResource SecondaryButton}" />
+    </WrapPanel>
+    <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,4,0,14" />
+    <ListBox ItemsSource="{Binding Discovered}" MaxHeight="160" />
+    <Border Style="{StaticResource Panel}" Margin="0,16,0,0">
+      <StackPanel>
+        <TextBlock Text="TV platform adapters" Style="{StaticResource SectionTitle}" />
+        <TextBlock Text="Read-only discovery. Unauthenticated; does not verify compatibility or permit tests."
+                   Style="{StaticResource Muted}" Margin="0,0,0,10" />
+        <Button Content="Check vendor platform tools" Command="{Binding CheckPlatformToolsCommand}" HorizontalAlignment="Left" />
+        <ListBox ItemsSource="{Binding PlatformAdapters}" MaxHeight="210" Margin="0,10,0,0">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Margin="2,5">
+                <TextBlock Text="{Binding Platform}" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Tool}" Style="{StaticResource Muted}" />
+                <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </StackPanel>
+    </Border>
+    <GroupBox Header="Roku TV (read-only ECP probe)">
+      <StackPanel Margin="4">
+        <TextBlock Text="IP address or hostname (no automatic scanning)" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+        <TextBox Text="{Binding RokuHost, UpdateSourceTrigger=PropertyChanged}" />
+        <Button Content="Check Roku endpoint" Command="{Binding CheckRokuCommand}" HorizontalAlignment="Left" Style="{StaticResource SecondaryButton}" />
+        <TextBlock Text="{Binding RokuStatus}" TextWrapping="Wrap" Margin="0,4,0,0" />
+      </StackPanel>
+    </GroupBox>
+    <TextBlock Text="Discovery is unauthenticated and does not verify compatibility or permit tests. Use only vendor-authorized tools and devices." TextWrapping="Wrap" Style="{StaticResource Muted}" Margin="0,12,0,0" />
+  </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,52 @@
+{
+  "title": "Offline grace period is bounded",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "expires": 60,
+            "nonce": "nonce-offl-01"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "go_offline",
+      "args": {}
+    },
+    {
+      "call": "advance",
+      "args": {
+        "seconds": 120
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": true,
+        "mode": "grace"
+      }
+    },
+    {
+      "call": "advance",
+      "args": {
+        "seconds": 259200
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false,
+        "mode": "locked"
+      }
+    }
+  ]
+}

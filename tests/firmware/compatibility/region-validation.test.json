@@ -1,0 +1,17 @@
+{
+  "title": "Region compatibility check",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "check_compatibility",
+      "args": {
+        "model": "SIM-TV-55",
+        "hardware": "rev-B",
+        "region": "XX"
+      },
+      "expect": {
+        "compatible": false
+      }
+    }
+  ]
+}

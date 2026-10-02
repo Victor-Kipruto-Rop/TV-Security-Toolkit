@@ -1,0 +1,89 @@
+{
+  "category": "payg",
+  "group": "factory-reset",
+  "tests": [
+    {
+      "id": "payg.factory-reset.reset-security",
+      "title": "Factory reset keeps replay protection",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": "nonce-reset-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "factory_reset",
+          "args": {},
+          "expect": {
+            "ok": true
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": false,
+            "mode": "locked"
+          }
+        },
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": "nonce-reset-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "replay"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.factory-reset.state-recovery",
+      "title": "Device accepts fresh entitlement after reset",
+      "severity": "medium",
+      "steps": [
+        {
+          "call": "factory_reset",
+          "args": {},
+          "expect": {
+            "ok": true
+          }
+        },
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": "nonce-recov-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": true
+          }
+        }
+      ]
+    }
+  ]
+}

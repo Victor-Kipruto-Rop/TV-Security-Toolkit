@@ -1,0 +1,4 @@
+{
+  "testTimeoutSeconds": 60,
+  "stopOnCriticalFailure": false
+}

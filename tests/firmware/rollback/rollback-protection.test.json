@@ -1,0 +1,27 @@
+{
+  "title": "Rollback protection is enforced",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "info",
+      "args": {},
+      "expect": {
+        "rollback_enforced": true
+      }
+    },
+    {
+      "call": "apply_update",
+      "args": {
+        "package": {
+          "$package": {
+            "version": "1.2.0"
+          }
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "downgrade_blocked"
+      }
+    }
+  ]
+}

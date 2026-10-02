@@ -1,0 +1,28 @@
+{
+  "title": "Model compatibility check",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "check_compatibility",
+      "args": {
+        "model": "SIM-TV-55",
+        "hardware": "rev-B",
+        "region": "KE"
+      },
+      "expect": {
+        "compatible": true
+      }
+    },
+    {
+      "call": "check_compatibility",
+      "args": {
+        "model": "OTHER-TV",
+        "hardware": "rev-B",
+        "region": "KE"
+      },
+      "expect": {
+        "compatible": false
+      }
+    }
+  ]
+}

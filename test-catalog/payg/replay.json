@@ -1,0 +1,61 @@
+{
+  "category": "payg",
+  "group": "replay",
+  "tests": [
+    {
+      "id": "payg.replay.replay-protection",
+      "title": "Replayed entitlement rejected",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": "nonce-replay-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": "nonce-replay-1"
+              }
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "replay"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.replay.nonce-validation",
+      "title": "Empty/short nonce rejected",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": ""
+              }
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "invalid_nonce"
+          }
+        }
+      ]
+    }
+  ]
+}

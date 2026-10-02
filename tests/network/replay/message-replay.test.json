@@ -1,0 +1,25 @@
+{
+  "title": "Replayed protocol message rejected",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "send_message",
+      "args": {
+        "seq": 1
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "send_message",
+      "args": {
+        "seq": 1
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "replay"
+      }
+    }
+  ]
+}

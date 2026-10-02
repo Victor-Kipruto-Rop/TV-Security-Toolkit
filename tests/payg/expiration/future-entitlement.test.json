@@ -1,0 +1,22 @@
+{
+  "title": "Entitlement issued in the future rejected",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "issued": 3600,
+            "expires": 90000,
+            "nonce": "nonce-future-1"
+          }
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "not_yet_valid"
+      }
+    }
+  ]
+}

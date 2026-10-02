@@ -1,0 +1,27 @@
+{
+  "category": "update",
+  "group": "downgrade",
+  "tests": [
+    {
+      "id": "update.downgrade.downgrade-protection",
+      "title": "Signed downgrade rejected",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": {
+              "$package": {
+                "version": "1.3.0"
+              }
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "downgrade_blocked"
+          }
+        }
+      ]
+    }
+  ]
+}

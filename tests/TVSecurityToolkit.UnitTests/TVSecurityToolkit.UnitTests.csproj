@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>TVSecurityToolkit.UnitTests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Core\TVSecurityToolkit.Core.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Engine\TVSecurityToolkit.Engine.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Device\TVSecurityToolkit.Device.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Security\TVSecurityToolkit.Security.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Reporting\TVSecurityToolkit.Reporting.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Tests.PayG\TVSecurityToolkit.Tests.PayG.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Tests.Firmware\TVSecurityToolkit.Tests.Firmware.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Tests.Update\TVSecurityToolkit.Tests.Update.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Tests.Network\TVSecurityToolkit.Tests.Network.csproj" />
+    <ProjectReference Include="..\..\src\TVSecurityToolkit.Tests.Local\TVSecurityToolkit.Tests.Local.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,74 @@
+{
+  "category": "network",
+  "group": "tls",
+  "tests": [
+    {
+      "id": "network.tls.tls-validation",
+      "title": "TLS rejects wrong host and legacy protocol",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "tls_connect",
+          "args": {
+            "scenario": "valid"
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "tls_connect",
+          "args": {
+            "scenario": "wrong_host"
+          },
+          "expect": {
+            "accepted": false
+          }
+        },
+        {
+          "call": "tls_connect",
+          "args": {
+            "scenario": "tls10"
+          },
+          "expect": {
+            "accepted": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "network.tls.certificate-validation",
+      "title": "TLS rejects expired/self-signed/revoked certs",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "tls_connect",
+          "args": {
+            "scenario": "expired_cert"
+          },
+          "expect": {
+            "accepted": false
+          }
+        },
+        {
+          "call": "tls_connect",
+          "args": {
+            "scenario": "self_signed"
+          },
+          "expect": {
+            "accepted": false
+          }
+        },
+        {
+          "call": "tls_connect",
+          "args": {
+            "scenario": "revoked"
+          },
+          "expect": {
+            "accepted": false
+          }
+        }
+      ]
+    }
+  ]
+}

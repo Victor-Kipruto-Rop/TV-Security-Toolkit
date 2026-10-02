@@ -1,0 +1,7 @@
+{
+  "device_id": "SIM-0001",
+  "nonce": "payload-expired-0001",
+  "issued_at": 1772224000,
+  "expires_at": 1779999940,
+  "sig": "01d268a4e387ded2fca2c5580d5ad2a60de256a44bdd1c6b9107ab78f8e99ba9"
+}

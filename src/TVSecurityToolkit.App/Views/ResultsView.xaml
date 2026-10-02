@@ -1,0 +1,18 @@
+<UserControl x:Class="TVSecurityToolkit.App.Views.ResultsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Top" Text="Results" Style="{StaticResource Title}" />
+    <TextBlock DockPanel.Dock="Top" Text="Per-test outcome for the most recent run, with evidence for each result." Style="{StaticResource Subtitle}" Margin="0,0,0,10" />
+    <TextBox DockPanel.Dock="Bottom" Text="{Binding Evidence, Mode=OneWay}" IsReadOnly="True" Height="150"
+             Style="{StaticResource Mono}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+             Background="{StaticResource SurfaceSunkenBrush}" Margin="0,10,0,0" />
+    <DataGrid ItemsSource="{Binding Results}" SelectedItem="{Binding Selected, Mode=TwoWay}" MinHeight="260">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
+        <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" />
+        <DataGridTextColumn Header="Test" Binding="{Binding Id}" />
+        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" />
+        <DataGridTextColumn Header="ms" Binding="{Binding DurationMs}" />
+      </DataGrid.Columns>
+    </DataGrid>
+  </DockPanel>
+</UserControl>

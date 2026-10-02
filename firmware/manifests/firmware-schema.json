@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": [
+    "model",
+    "hardware",
+    "version",
+    "body_sha256"
+  ]
+}

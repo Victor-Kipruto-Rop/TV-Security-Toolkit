@@ -1,0 +1,5 @@
+{
+  "level": "INFO",
+  "file": "logs/tests/toolkit.log",
+  "format": "%(asctime)s %(levelname)s %(message)s"
+}

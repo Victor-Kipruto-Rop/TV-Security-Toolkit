@@ -1,0 +1,34 @@
+{
+  "title": "Malformed entitlement rejected",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$bytes": "{not json"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "malformed"
+      }
+    },
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "omit": [
+              "expires_at"
+            ]
+          }
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "malformed"
+      }
+    }
+  ]
+}

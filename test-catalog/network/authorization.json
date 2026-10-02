@@ -1,0 +1,50 @@
+{
+  "category": "network",
+  "group": "authorization",
+  "tests": [
+    {
+      "id": "network.authorization.authorization",
+      "title": "Admin endpoint denied to normal user",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "api_call",
+          "args": {
+            "endpoint": "/admin/config",
+            "role": "user"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "call": "api_call",
+          "args": {
+            "endpoint": "/admin/config",
+            "role": "admin"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "network.authorization.privilege-boundary",
+      "title": "Technician cannot factory-reset via API",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "api_call",
+          "args": {
+            "endpoint": "/admin/factory-reset",
+            "role": "technician"
+          },
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "category": "usb",
+  "group": "signature",
+  "tests": [
+    {
+      "id": "usb.signature.usb-signature",
+      "title": "Unsigned USB package rejected",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@invalid/invalid-signature.pkg",
+            "source": "usb"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "invalid_signature"
+          }
+        }
+      ]
+    }
+  ]
+}

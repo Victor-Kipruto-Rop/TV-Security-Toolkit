@@ -1,0 +1,71 @@
+{
+  "category": "firmware",
+  "group": "compatibility",
+  "tests": [
+    {
+      "id": "firmware.compatibility.model-validation",
+      "title": "Model compatibility check",
+      "severity": "medium",
+      "steps": [
+        {
+          "call": "check_compatibility",
+          "args": {
+            "model": "SIM-TV-55",
+            "hardware": "rev-B",
+            "region": "KE"
+          },
+          "expect": {
+            "compatible": true
+          }
+        },
+        {
+          "call": "check_compatibility",
+          "args": {
+            "model": "OTHER-TV",
+            "hardware": "rev-B",
+            "region": "KE"
+          },
+          "expect": {
+            "compatible": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "firmware.compatibility.hardware-validation",
+      "title": "Hardware revision compatibility check",
+      "severity": "medium",
+      "steps": [
+        {
+          "call": "check_compatibility",
+          "args": {
+            "model": "SIM-TV-55",
+            "hardware": "rev-Z",
+            "region": "KE"
+          },
+          "expect": {
+            "compatible": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "firmware.compatibility.region-validation",
+      "title": "Region compatibility check",
+      "severity": "medium",
+      "steps": [
+        {
+          "call": "check_compatibility",
+          "args": {
+            "model": "SIM-TV-55",
+            "hardware": "rev-B",
+            "region": "XX"
+          },
+          "expect": {
+            "compatible": false
+          }
+        }
+      ]
+    }
+  ]
+}

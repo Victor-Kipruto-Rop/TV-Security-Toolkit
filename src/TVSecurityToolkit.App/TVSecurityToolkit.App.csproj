@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>TVSecurityToolkit.App</RootNamespace>
+    <AssemblyName>TV-Security-Toolkit</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <ProjectReference Include="..\TVSecurityToolkit.Core\TVSecurityToolkit.Core.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Engine\TVSecurityToolkit.Engine.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Device\TVSecurityToolkit.Device.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Security\TVSecurityToolkit.Security.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Reporting\TVSecurityToolkit.Reporting.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Tests.PayG\TVSecurityToolkit.Tests.PayG.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Tests.Firmware\TVSecurityToolkit.Tests.Firmware.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Tests.Update\TVSecurityToolkit.Tests.Update.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Tests.Network\TVSecurityToolkit.Tests.Network.csproj" />
+    <ProjectReference Include="..\TVSecurityToolkit.Tests.Local\TVSecurityToolkit.Tests.Local.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Runtime data the app reads from its output folder -->
+    <Content Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\config\**\*.json" Link="config\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\test-catalog\**\*.json" Link="test-catalog\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\payloads\**\*" Link="payloads\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,35 @@
+{
+  "category": "firmware",
+  "group": "secure-boot",
+  "tests": [
+    {
+      "id": "firmware.secure-boot.secure-boot-state",
+      "title": "Secure boot enabled and locked",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "secure_boot_state",
+          "args": {},
+          "expect": {
+            "enabled": true,
+            "locked": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "firmware.secure-boot.boot-chain",
+      "title": "Boot chain verifies end to end",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "verify_boot_chain",
+          "args": {},
+          "expect": {
+            "ok": true
+          }
+        }
+      ]
+    }
+  ]
+}

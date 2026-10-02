@@ -1,0 +1,13 @@
+{
+  "formats": [
+    "html",
+    "json"
+  ],
+  "redact_keys": [
+    "sig",
+    "key",
+    "secret",
+    "password",
+    "mac"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Malformed USB package rejected",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "apply_update",
+      "args": {
+        "package": "@invalid/invalid-manifest.json",
+        "source": "usb"
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "malformed"
+      }
+    },
+    {
+      "call": "apply_update",
+      "args": {
+        "package": {
+          "$bytes": "garbage\u0000\u00ff"
+        },
+        "source": "usb"
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "malformed"
+      }
+    }
+  ]
+}

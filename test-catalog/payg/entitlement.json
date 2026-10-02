@@ -1,0 +1,90 @@
+{
+  "category": "payg",
+  "group": "entitlement",
+  "tests": [
+    {
+      "id": "payg.entitlement.valid-entitlement",
+      "title": "Valid signed entitlement accepted",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": "@valid/valid-entitlement.json"
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": true,
+            "mode": "active"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.entitlement.invalid-entitlement",
+      "title": "Entitlement with bad signature rejected",
+      "severity": "critical",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": "@invalid/invalid-entitlement.json"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "bad_signature"
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": false,
+            "mode": "locked"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.entitlement.malformed-entitlement",
+      "title": "Malformed entitlement rejected",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$bytes": "{not json"
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "malformed"
+          }
+        },
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "omit": [
+                  "expires_at"
+                ]
+              }
+            }
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "malformed"
+          }
+        }
+      ]
+    }
+  ]
+}

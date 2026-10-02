@@ -1,0 +1,15 @@
+{
+  "title": "Supported firmware version accepted",
+  "severity": "medium",
+  "steps": [
+    {
+      "call": "validate_version",
+      "args": {
+        "version": "1.4.0"
+      },
+      "expect": {
+        "supported": true
+      }
+    }
+  ]
+}

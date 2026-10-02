@@ -1,0 +1,24 @@
+{
+  "title": "Unauthenticated API call rejected",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "api_call",
+      "args": {
+        "credential": "valid"
+      },
+      "expect": {
+        "status": 200
+      }
+    },
+    {
+      "call": "api_call",
+      "args": {
+        "credential": "none"
+      },
+      "expect": {
+        "status": 401
+      }
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "category": "payg",
+  "group": "offline",
+  "tests": [
+    {
+      "id": "payg.offline.offline-grace",
+      "title": "Offline grace period is bounded",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "expires": 60,
+                "nonce": "nonce-offl-01"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "go_offline",
+          "args": {}
+        },
+        {
+          "call": "advance",
+          "args": {
+            "seconds": 120
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": true,
+            "mode": "grace"
+          }
+        },
+        {
+          "call": "advance",
+          "args": {
+            "seconds": 259200
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": false,
+            "mode": "locked"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payg.offline.reconnect",
+      "title": "Reconnect after lapse needs fresh entitlement",
+      "severity": "medium",
+      "steps": [
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "expires": 60,
+                "nonce": "nonce-reco-01"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "go_offline",
+          "args": {}
+        },
+        {
+          "call": "advance",
+          "args": {
+            "seconds": 400000
+          }
+        },
+        {
+          "call": "reconnect",
+          "args": {},
+          "expect": {
+            "state": {
+              "entitled": false,
+              "mode": "locked"
+            }
+          }
+        },
+        {
+          "call": "apply_entitlement",
+          "args": {
+            "entitlement": {
+              "$entitlement": {
+                "nonce": "nonce-reco-02"
+              }
+            }
+          },
+          "expect": {
+            "accepted": true
+          }
+        },
+        {
+          "call": "state",
+          "args": {},
+          "expect": {
+            "entitled": true
+          }
+        }
+      ]
+    }
+  ]
+}

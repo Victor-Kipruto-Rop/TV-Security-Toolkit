@@ -1,0 +1,13 @@
+{
+  "title": "Sensitive data stored encrypted",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "storage_audit",
+      "args": {},
+      "expect": {
+        "unencrypted_sensitive_files": 0
+      }
+    }
+  ]
+}

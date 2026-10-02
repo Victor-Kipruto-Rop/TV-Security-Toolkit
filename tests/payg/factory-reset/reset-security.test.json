@@ -1,0 +1,48 @@
+{
+  "title": "Factory reset keeps replay protection",
+  "severity": "critical",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "nonce": "nonce-reset-1"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    },
+    {
+      "call": "factory_reset",
+      "args": {},
+      "expect": {
+        "ok": true
+      }
+    },
+    {
+      "call": "state",
+      "args": {},
+      "expect": {
+        "entitled": false,
+        "mode": "locked"
+      }
+    },
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "nonce": "nonce-reset-1"
+          }
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "reason": "replay"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "title": "Entitlement bound to this device accepted",
+  "severity": "high",
+  "steps": [
+    {
+      "call": "apply_entitlement",
+      "args": {
+        "entitlement": {
+          "$entitlement": {
+            "nonce": "nonce-bind-01"
+          }
+        }
+      },
+      "expect": {
+        "accepted": true
+      }
+    }
+  ]
+}

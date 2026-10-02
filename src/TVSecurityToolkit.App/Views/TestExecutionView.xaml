@@ -1,0 +1,16 @@
+<UserControl x:Class="TVSecurityToolkit.App.Views.TestExecutionView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Top" Text="Test execution" Style="{StaticResource Title}" />
+    <TextBlock DockPanel.Dock="Top" Text="Run only the checks you are authorized to perform against this target." Style="{StaticResource Subtitle}" Margin="0,0,0,6" />
+    <WrapPanel DockPanel.Dock="Top">
+      <Button Content="Run selected tests" Command="{Binding RunCommand}" />
+      <Button Content="Cancel" Command="{Binding CancelCommand}" Style="{StaticResource DangerButton}" />
+    </WrapPanel>
+    <ProgressBar DockPanel.Dock="Top" Minimum="0" Maximum="100" Value="{Binding Percent, Mode=OneWay}" Margin="0,0,0,10" />
+    <TextBlock DockPanel.Dock="Top" Text="{Binding CurrentTest}" Margin="0,0,0,6" FontWeight="SemiBold" />
+    <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" Margin="0,0,0,10" Style="{StaticResource Muted}" />
+    <Border DockPanel.Dock="Top" Style="{StaticResource Panel}" Padding="16">
+      <ListBox ItemsSource="{Binding Log}" Style="{StaticResource MonoList}" MinHeight="300" />
+    </Border>
+  </DockPanel>
+</UserControl>

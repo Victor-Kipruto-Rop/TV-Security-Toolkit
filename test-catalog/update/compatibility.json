@@ -1,0 +1,33 @@
+{
+  "category": "update",
+  "group": "compatibility",
+  "tests": [
+    {
+      "id": "update.compatibility.wrong-model-update",
+      "title": "Update for other model/hardware rejected",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@incompatible/wrong-model.pkg"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "wrong_model"
+          }
+        },
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@incompatible/wrong-hardware.pkg"
+          },
+          "expect": {
+            "accepted": false,
+            "reason": "wrong_model"
+          }
+        }
+      ]
+    }
+  ]
+}

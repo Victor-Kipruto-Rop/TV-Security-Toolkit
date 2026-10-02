@@ -1,0 +1,23 @@
+{
+  "category": "update",
+  "group": "valid",
+  "tests": [
+    {
+      "id": "update.valid.valid-update",
+      "title": "Valid signed update installs",
+      "severity": "high",
+      "steps": [
+        {
+          "call": "apply_update",
+          "args": {
+            "package": "@valid/valid-update.pkg"
+          },
+          "expect": {
+            "accepted": true,
+            "running_version": "1.5.0"
+          }
+        }
+      ]
+    }
+  ]
+}

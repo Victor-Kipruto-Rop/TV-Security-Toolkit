@@ -1,0 +1,29 @@
+{
+  "category": "usb",
+  "group": "discovery",
+  "tests": [
+    {
+      "id": "usb.discovery.package-discovery",
+      "title": "USB scan only offers .pkg candidates",
+      "severity": "low",
+      "steps": [
+        {
+          "call": "usb_discover",
+          "args": {
+            "files": [
+              "update.pkg",
+              "notes.txt",
+              ".hidden.pkg",
+              "x.pkg.tmp"
+            ]
+          },
+          "expect": {
+            "candidates": [
+              "update.pkg"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

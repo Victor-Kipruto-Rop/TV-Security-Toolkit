@@ -1,0 +1,7 @@
+<Project>
+  <!-- Shared targets. Project-specific content copying lives in each csproj. -->
+  <PropertyGroup>
+    <InformationalVersion>$(Version)</InformationalVersion>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+</Project>
