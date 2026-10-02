@@ -209,6 +209,60 @@ This is **tamper evidence, not tamper proofing**. The chain is an unkeyed hash, 
 - **Gap:** no release has been produced, because B1 stands. No release branch strategy, no changelog, no tag/signature verification story, and no rollback procedure for a published package.
 - **Next:** B1, then a full dry-run release on a clean VM.
 
+## P0 status
+
+The fifteen P0 items, and where each one actually stands.
+
+| # | Item | Status | Evidence / what is left |
+| --- | --- | --- | --- |
+| 1 | Fix failing GitHub Actions | BLOCKED | B2. All five jobs die in 1-5 s with zero steps and `runner_id: 0`. Account-level, not repository. |
+| 2 | Complete .NET unit/integration suite | VERIFIED, then SAC-blocked | 104/104 unit and 12/12 integration passed on commit `0244d89`. Later runs are blocked by Smart App Control on rebuilt unsigned assemblies (`0x800711C7`), with zero assertion failures. Needs a re-run on a clean host or CI to be re-confirmed after `d561edc`. |
+| 3 | Python suite passing | DONE | 10/10, including four new configuration-parity tests. |
+| 4 | Remove/implement generic adapter | DONE (documented) | `generic` fails closed by design and is documented as not implemented in `README` and the adapter maturity table. It was not implemented, because doing so needs the vendor protocol (B3). |
+| 5 | Unify .NET/Python configuration | DONE | The lab key lived in two files under two names. Now a single file, `config/security-policy.json`, read by both. See below. |
+| 6 | Complete CI security gates | BLOCKED | CodeQL and the dependency audit are configured but have never executed (B2). |
+| 7 | Production device authentication | GAP, BLOCKED | No authentication exists in the adapter contract. Needs B3. |
+| 8 | Real protocol compatibility | BLOCKED | Needs B3. |
+| 9 | Authorized real-device testing | BLOCKED | Needs B3. |
+| 10 | Production code signing | BLOCKED | B1. Signing and timestamping are proven; the certificate is missing. |
+| 11 | Clean-machine testing | BLOCKED | Needs B1 and a clean SAC-enabled VM. |
+| 12 | Package verification | PARTIAL | `verify-package-signatures.ps1` verifies a produced package; 599 files were SHA-256 verified at staging. Cannot be validated end to end without a trusted certificate. |
+| 13 | Evidence integrity verification | DONE (first pass) | Hash chain, manifest, and 14 passing tests. Remaining: sign the manifest (needs B1). |
+| 14 | Complete security regression suite | PARTIAL | Catalog parity 55/55 and the policy/safety tests exist. Coverage against real devices is blocked by B3. |
+| 15 | Define supported device matrix | BLOCKED | No hardware has been tested, so any matrix would be fabricated. Deliberately not written. |
+
+### P0 item 5 in detail
+
+The lab signing key was stored twice under two different names in two different files:
+`config/security-policy.json` (`labSigningKeyHex`, read by the .NET app and tests) and
+`config/security.json` (`lab_signing_key_hex`, read by the Python CLI). Nothing checked that the
+copies matched.
+
+This was not theoretical. `tools/generate_assets.py` only ever wrote the **Python-side** file and read
+its own previous output to preserve the key, so deleting `config/security.json` and regenerating assets
+would silently mint a new key. The .NET app would keep using the old one, and the two entry points
+would disagree about what the simulator had signed with.
+
+Fixed by making `config/security-policy.json` the single source of truth: Python reads it through a new
+`Config.lab_key_hex` that fails closed with an actionable message, the generator maintains that one
+file and preserves an existing key, and `config/security.json` is deleted.
+
+Guarded by `ConfigParityTests` (xUnit: only one security config file exists; `labSigningKeyHex` appears
+nowhere else in the repository; both entry points resolve the same key; the non-production warning
+survives) and four equivalent Python tests.
+
+- **Verified:** Python 10/10. Of the four new xUnit tests, 3 pass; `Python_and_dotnet_read_the_same_lab_key` is blocked by Smart App Control loading `TVSecurityToolkit.Security.dll` and never reaches its assertions.
+
+### A separate generator hazard found while doing this
+
+`tools/generate_assets.py` does not reproduce the committed configuration. Running it rewrites
+`config/toolkit.json` (`defaultEnvironment`/`outputDir` committed, `default_profile`/`default_device`
+generated), `config/device-policy.json`, `config/severity-rules.json`, `config/test-policy.json`, and four
+`schemas/*.schema.json` files (committed schemas require `"id"`, generated ones do not). Those changes
+were reverted to keep this diff focused, but it means **running the generator is currently destructive
+to committed configuration.** Treat the generator as untrustworthy until the drift is reconciled; do not
+run it on a working tree.
+
 ## Recommended order
 
 1. **B2** enable Actions. Cheapest blocker; immediately restores build, test, and supply-chain evidence for this document.
