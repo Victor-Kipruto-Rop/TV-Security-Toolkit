@@ -33,6 +33,10 @@ The installer verifies the launcher and executable, checks Windows' removable-dr
 
 Launch by opening `E:\TV-Security-Toolkit-USB` and double-clicking `Start-TV-Security-Toolkit.cmd`. Reports are written under the package's configured reports/evidence/logs folders. Keep the drive physically secure and encrypt it if reports may contain sensitive information.
 
+## USB discovery in the Windows application
+
+Open the Device page and choose **Start USB watcher**. The app polls the host USB inventory approximately once per second and records present, attached, and removed descriptors in the watcher panel. Choose **Stop watcher** when finished. This does not auto-connect, authenticate the TV, or launch a test. Polling can miss very short-lived connections; the app must remain open for the watcher to run.
+
 ## USB discovery from the Python CLI
 
 Install the optional Python USB dependency:
