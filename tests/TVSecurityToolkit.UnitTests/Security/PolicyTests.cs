@@ -18,9 +18,9 @@ public class PolicyTests
     [Fact]
     public void Security_command_policy_sets_are_frozen_and_case_sensitive()
     {
-        Assert.IsType<FrozenSet<string>>(SecurityConstants.MutatingCommands);
-        Assert.IsType<FrozenSet<string>>(SecurityConstants.ReadOnlyCommands);
-        Assert.IsType<FrozenSet<string>>(SecurityConstants.IdentityKeys);
+        Assert.IsAssignableFrom<FrozenSet<string>>(SecurityConstants.MutatingCommands);
+        Assert.IsAssignableFrom<FrozenSet<string>>(SecurityConstants.ReadOnlyCommands);
+        Assert.IsAssignableFrom<FrozenSet<string>>(SecurityConstants.IdentityKeys);
         Assert.False(SecurityConstants.ReadOnlyCommands.Contains("STATE"));
         Assert.True(SecurityConstants.ReadOnlyCommands.Contains("state"));
     }
