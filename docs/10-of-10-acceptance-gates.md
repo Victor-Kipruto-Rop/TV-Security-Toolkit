@@ -17,13 +17,13 @@ As of 2026-10-13:
 |---|---|---|
 | Reproducible build and CI | Clean build, complete .NET/Python tests, dependency audit and CodeQL passing on the release commit | **Passing on the recorded commit; re-run for each release** |
 | Test reliability | Remove timing-sensitive flakes; demonstrate repeatable full-suite passes and integration coverage | **Open** |
-| Production trust boundary | Production execution refuses lab-only keys and simulator trust material; no fallback to lab credentials | **Open; do not claim production authentication** |
-| Transport-level safety | Enforce authorization and read-only policy at the command boundary, not only during catalog selection | **Open** |
+| Production trust boundary | Production execution refuses lab-only keys and simulator trust material; no fallback to lab credentials | **Profile-level lab-key guard added in PR #9; CI pending. Vendor authentication remains open** |
+| Transport-level safety | Enforce authorization and read-only policy at the command boundary, not only during catalog selection | **Read-only allowlist enforcement added at adapter and protocol-client boundaries in PR #9; CI pending. Device authentication/authorization remains open** |
 | Device identity and authentication | Vendor-documented trust model, verified identity, authorization before commands, negative tests for unknown/forged devices | **Blocked on vendor specification and authorized device** |
 | Protocol compatibility | Protocol framing, version/capability negotiation and error behavior validated against a named supported model/firmware | **Blocked on vendor specification and authorized device** |
 | Hardware evidence | Reproducible positive/negative runs on each claimed model/OS/firmware; unsupported checks reported as unsupported, never passed | **Not yet established** |
 | Evidence integrity and privacy | Verify archives/manifests, test redaction with realistic fixtures, document retention and deletion | **Partial; unsigned hash chain is tamper-evident, not proof of origin** |
-| Accessibility | Keyboard-only navigation, meaningful screen-reader names, progress announcements, focus and contrast checks | **Open** |
+| Accessibility | Keyboard-only navigation, meaningful screen-reader names, progress announcements, focus and contrast checks | **Fallback automation naming and status live-region added in PR #9; manual screen-reader, keyboard, focus, and contrast validation still open** |
 | Trusted release | Publicly trusted signing certificate, timestamped signatures, signature verification, checksum validation | **Blocked on compatible certificate** |
 | Clean-machine distribution | Install/launch on a clean Windows machine with normal security controls enabled; verify USB copy hashes | **Open** |
 | Independent review | Security review of threat model, cryptography, permissions, data handling, and failure modes with findings resolved | **Open** |
