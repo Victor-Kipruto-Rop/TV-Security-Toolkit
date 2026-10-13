@@ -1,4 +1,4 @@
-<UserControl x:Class="TVSecurityToolkit.App.Views.SettingsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<UserControl x:Class="TVSecurityToolkit.App.Views.SettingsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:accessibility="clr-namespace:TVSecurityToolkit.App.Accessibility" accessibility:AutomationNameBehavior.EnableAutoNames="True">
   <StackPanel MaxWidth="520" HorizontalAlignment="Left">
     <TextBlock Text="Settings" Style="{StaticResource Title}" />
     <TextBlock Text="Active environment and output location." Style="{StaticResource Subtitle}" Margin="0,0,0,10" />
