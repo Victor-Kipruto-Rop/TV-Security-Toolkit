@@ -13,16 +13,18 @@ Three things gate most of the remaining areas. Until they are cleared, no distri
 | # | Blocker | Blocks | Owner |
 | --- | --- | --- | --- |
 | B1 | No publicly trusted code-signing certificate | Packaging, release, clean-machine install, USB distribution | Human: obtain certificate, set `SIGNING_CERTIFICATE_BASE64` / `SIGNING_CERTIFICATE_PASSWORD` |
-| B2 | GitHub Actions jobs rejected during scheduling (1-5 s, zero steps, no runner) | Build, test, supply-chain, compliance evidence | Human: account/org Actions enablement, spending limit, or billing |
+| B2 | CI execution evidence | Build, test, dependency audit, CodeQL | **Cleared for the current main commit:** Build run `38417030322`, Security run `38417030341`, and Test run `38417030342` completed successfully on 2026-10-13. Re-check after future workflow or code changes. |
 | B3 | No authorized development TV and no vendor protocol specification | Real-device communication, device authentication, hardware compatibility, firmware, update, PAYG validation | Human: arrange authorized device, obtain protocol spec |
 
-B2 is the cheapest to clear and immediately restores CI evidence for this document.
+B2 was cleared for the current main commit. This does not resolve the separate code-signing or real-hardware blockers.
 
-## 1. Build and CI reliability - BLOCKED
+## 1. Build and CI reliability - VERIFIED (current main commit)
 
-- Release solution build succeeds with 0 warnings and 0 errors (verified in a clean clone).
-- Four workflows exist (`build`, `test`, `security`, `release`) and are well formed; all five jobs fail at scheduling with no runner. See [GitHub Actions status](implementation-audit.md#github-actions-status).
-- **Next:** clear B2, then confirm the `dotnet list package --vulnerable` and CodeQL steps actually pass rather than being assumed.
+- The Build workflow completed successfully, including its unsigned USB-package smoke test (run `38417030322`).
+- The Security workflow completed successfully: dependency audit and CodeQL both passed (run `38417030341`).
+- The Test workflow completed successfully for the .NET and Python jobs (run `38417030342`).
+- These are point-in-time results for the current main commit, not a guarantee that future changes will pass. Re-run and inspect all jobs after code or workflow changes.
+- **Remaining:** improve test stability and coverage, and keep the CI evidence current. These CI passes do not validate real-TV compatibility.
 
 ## 2. Application architecture - PARTIAL
 
@@ -215,12 +217,12 @@ The fifteen P0 items, and where each one actually stands.
 
 | # | Item | Status | Evidence / what is left |
 | --- | --- | --- | --- |
-| 1 | Fix failing GitHub Actions | BLOCKED | B2. All five jobs die in 1-5 s with zero steps and `runner_id: 0`. Account-level, not repository. |
+| 1 | Fix failing GitHub Actions | DONE for current main commit | Build run `38417030322`, Security run `38417030341`, and Test run `38417030342` all completed successfully on 2026-10-13. Recheck after subsequent changes. |
 | 2 | Complete .NET unit/integration suite | VERIFIED, then SAC-blocked | 104/104 unit and 12/12 integration passed on commit `0244d89`. Later runs are blocked by Smart App Control on rebuilt unsigned assemblies (`0x800711C7`), with zero assertion failures. Needs a re-run on a clean host or CI to be re-confirmed after `d561edc`. |
 | 3 | Python suite passing | DONE | 10/10, including four new configuration-parity tests. |
 | 4 | Remove/implement generic adapter | DONE (documented) | `generic` fails closed by design and is documented as not implemented in `README` and the adapter maturity table. It was not implemented, because doing so needs the vendor protocol (B3). |
 | 5 | Unify .NET/Python configuration | DONE | The lab key lived in two files under two names. Now a single file, `config/security-policy.json`, read by both. See below. |
-| 6 | Complete CI security gates | BLOCKED | CodeQL and the dependency audit are configured but have never executed (B2). |
+| 6 | Complete CI security gates | DONE for current main commit | Dependency audit and CodeQL completed successfully in Security run `38417030341`. This is not a substitute for independent security review or real-device validation. |
 | 7 | Production device authentication | GAP, BLOCKED | No authentication exists in the adapter contract. Needs B3. |
 | 8 | Real protocol compatibility | BLOCKED | Needs B3. |
 | 9 | Authorized real-device testing | BLOCKED | Needs B3. |
@@ -265,7 +267,7 @@ run it on a working tree.
 
 ## Recommended order
 
-1. **B2** enable Actions. Cheapest blocker; immediately restores build, test, and supply-chain evidence for this document.
+1. **Keep CI green.** Build, test, dependency-audit and CodeQL jobs have passed on the current main commit; re-run them after every material change.
 2. **Area 27** accessibility. Unblocked, contained, and currently at zero.
 3. **Area 3** stabilise the flaky TCP test, then run the full 90 + 12 suites on the CI host.
 4. **Areas 16 and 17** re-check the read-only allowlist at the transport boundary; make the production profile refuse a lab key.
