@@ -1,5 +1,8 @@
 using System.Text.Json.Nodes;
 using TVSecurityToolkit.Core.Exceptions;
+using TVSecurityToolkit.Core.Enums;
+using TVSecurityToolkit.Core.Models;
+using TVSecurityToolkit.Device;
 using TVSecurityToolkit.Core.Interfaces;
 using TVSecurityToolkit.Device.Communication;
 
@@ -36,6 +39,25 @@ public sealed class ReadOnlyTransportBoundaryTests
         Assert.Contains("read-only policy", error.Message, StringComparison.OrdinalIgnoreCase);
         Assert.False(transport.Opened);
         Assert.False(transport.Wrote);
+    }
+
+    [Fact]
+    public async Task Device_factory_enables_read_only_enforcement_for_network_hardware()
+    {
+        var device = DeviceFactory.Create(
+            new ConnectionSettings
+            {
+                Type = ConnectionType.Network,
+                Host = "127.0.0.1",
+                Port = 9
+            },
+            new byte[32]);
+        await using var adapter = device;
+
+        var error = await Assert.ThrowsAsync<DeviceException>(
+            () => adapter.CallAsync("factory_reset", new JsonObject(), CancellationToken.None));
+
+        Assert.Contains("read-only policy", error.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
