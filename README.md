@@ -57,8 +57,8 @@ before relying on any result:
 | --- | --- | --- |
 | `sim` | Usable | Built-in simulator. Results are synthetic and prove nothing about a real TV. |
 | `usb-loopback` | Usable | Exercises the full USB protocol path against the simulator. No hardware required. |
-| `usb` | Unverified | Real USB transport. The wire protocol is an **assumption** — no authorized TV has been tested. |
-| `generic` | **Not implemented** | `toolkit/device/generic.py` is a skeleton that raises `NotImplementedError` by design. |
+| `usb` | **Blocked by default** | Real USB security-test execution is refused until the exact model's vendor protocol and device authentication are implemented and verified. |
+| `generic` | **Blocked / not implemented** | The generic hardware adapter is a skeleton and hardware runs are refused by the CLI. |
 
 `generic` deliberately fails closed rather than returning fabricated results. It is the correct extension point
 for a real serial/network adapter, but it must be written against the vendor's actual protocol specification and
