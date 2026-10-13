@@ -190,6 +190,30 @@ class CliConfigTests(unittest.TestCase):
 
         self.assertEqual(result, 0)
 
+    def test_real_usb_hardware_run_fails_closed_until_vendor_protocol_and_auth_are_verified(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            result = main(["run", "--device", "usb"])
+
+        self.assertEqual(result, 2)
+        self.assertIn("verified device-authentication method", stderr.getvalue())
+
+    def test_generic_hardware_run_fails_closed_until_supported_adapter_exists(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            result = main(["run", "--device", "generic"])
+
+        self.assertEqual(result, 2)
+        self.assertIn("exact TV model", stderr.getvalue())
+
+    def test_usb_loopback_remains_available_for_simulator_testing(self):
+        with patch("toolkit.cli.logging.basicConfig"), patch(
+            "toolkit.cli.write_reports", return_value=[]
+        ), contextlib.redirect_stdout(io.StringIO()):
+            result = main(["run", "--device", "usb-loopback", "--category", "firmware", "--test", "signature-validation"])
+
+        self.assertEqual(result, 0)
+
     def test_run_rejects_filter_that_matches_no_tests(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
