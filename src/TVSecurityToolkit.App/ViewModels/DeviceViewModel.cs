@@ -16,6 +16,9 @@ public sealed class DeviceViewModel : ViewModelBase
     private ConnectionType _type = ConnectionType.Simulator;
     private string _vid = "", _pid = "", _epOut = "1", _epIn = "129", _serialPort = "COM3", _host = "127.0.0.1", _port = "5000", _flaws = "";
     private string _status = "Not connected";
+    private string _usbWatchStatus = "USB watcher stopped.";
+    private bool _isWatchingUsb;
+    private CancellationTokenSource? _usbWatchCancellation;
     private string _rokuHost = "";
     private string _rokuStatus = "No Roku endpoint checked.";
 
@@ -27,16 +30,21 @@ public sealed class DeviceViewModel : ViewModelBase
         DiscoverCommand = new AsyncRelayCommand(_ => DiscoverAsync(), null, OnError);
         CheckPlatformToolsCommand = new AsyncRelayCommand(_ => CheckPlatformToolsAsync(), null, OnError);
         CheckRokuCommand = new AsyncRelayCommand(_ => CheckRokuAsync(), null, OnRokuError);
+        StartUsbWatchCommand = new AsyncRelayCommand(_ => WatchUsbAsync(), _ => !IsWatchingUsb, OnError);
+        StopUsbWatchCommand = new AsyncRelayCommand(_ => { _usbWatchCancellation?.Cancel(); return Task.CompletedTask; }, _ => IsWatchingUsb);
     }
 
     public Array ConnectionTypes { get; } = Enum.GetValues(typeof(ConnectionType));
     public ObservableCollection<string> Discovered { get; } = new();
     public ObservableCollection<PlatformAdapterStatus> PlatformAdapters { get; } = new();
+    public ObservableCollection<string> UsbWatchResults { get; } = new();
     public AsyncRelayCommand ConnectCommand { get; }
     public AsyncRelayCommand DisconnectCommand { get; }
     public AsyncRelayCommand DiscoverCommand { get; }
     public AsyncRelayCommand CheckPlatformToolsCommand { get; }
     public AsyncRelayCommand CheckRokuCommand { get; }
+    public AsyncRelayCommand StartUsbWatchCommand { get; }
+    public AsyncRelayCommand StopUsbWatchCommand { get; }
 
     public ConnectionType SelectedType { get => _type; set { if (Set(ref _type, value)) { Raise(nameof(IsUsb)); Raise(nameof(IsSerial)); Raise(nameof(IsNetwork)); Raise(nameof(IsSimulator)); } } }
     public bool IsUsb => _type == ConnectionType.Usb;
@@ -52,6 +60,10 @@ public sealed class DeviceViewModel : ViewModelBase
     public string Port { get => _port; set => Set(ref _port, value); }
     public string Flaws { get => _flaws; set => Set(ref _flaws, value); }
     public string Status { get => _status; private set => Set(ref _status, value); }
+    public string UsbWatchStatus { get => _usbWatchStatus; private set => Set(ref _usbWatchStatus, value); }
+    public bool IsWatchingUsb { get => _isWatchingUsb; private set { if (Set(ref _isWatchingUsb, value)) { Raise(nameof(CanStartUsbWatch)); Raise(nameof(CanStopUsbWatch)); } } }
+    public bool CanStartUsbWatch => !IsWatchingUsb;
+    public bool CanStopUsbWatch => IsWatchingUsb;
     public string RokuHost { get => _rokuHost; set => Set(ref _rokuHost, value); }
     public string RokuStatus { get => _rokuStatus; private set => Set(ref _rokuStatus, value); }
 
@@ -105,6 +117,68 @@ public sealed class DeviceViewModel : ViewModelBase
             Log.Information("Platform adapter discovery for {Platform} via {Tool}: {Summary}",
                 result.Platform, result.Tool, result.Summary);
         }
+    }
+
+    private async Task WatchUsbAsync()
+    {
+        if (_usbWatchCancellation is not null) return;
+        using var cancellation = new CancellationTokenSource();
+        _usbWatchCancellation = cancellation;
+        IsWatchingUsb = true;
+        UsbWatchResults.Clear();
+        UsbWatchStatus = "Watching USB connections. Discovery only; tests will not start automatically.";
+        var current = new Dictionary<string, DiscoveredDevice>(StringComparer.OrdinalIgnoreCase);
+        try
+        {
+            while (!cancellation.IsCancellationRequested)
+            {
+                List<DiscoveredDevice> found;
+                try
+                {
+                    found = await Task.Run(() => new UsbDeviceDiscovery().Discover(), cancellation.Token);
+                }
+                catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception e) when (e is DllNotFoundException or TypeInitializationException or UnauthorizedAccessException or IOException)
+                {
+                    UsbWatchStatus = $"USB discovery unavailable ({e.GetType().Name}). Check the USB driver/runtime.";
+                    await Task.Delay(TimeSpan.FromSeconds(2), cancellation.Token);
+                    continue;
+                }
+
+                var updated = found
+                    .GroupBy(d => $"{d.Type}|{d.Id}|{d.Description}", StringComparer.OrdinalIgnoreCase)
+                    .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+                foreach (var pair in updated)
+                    if (!current.ContainsKey(pair.Key))
+                        AppendUsbWatchResult($"[present/attached] {pair.Value.Type} {pair.Value.Id} {pair.Value.Description}");
+                foreach (var pair in current)
+                    if (!updated.ContainsKey(pair.Key))
+                        AppendUsbWatchResult($"[removed] {pair.Value.Type} {pair.Value.Id} {pair.Value.Description}");
+                if (updated.Count == 0 && current.Count == 0 && UsbWatchResults.Count == 0)
+                    AppendUsbWatchResult("No USB devices detected yet.");
+                current = updated;
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellation.Token);
+            }
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            // Normal stop request.
+        }
+        finally
+        {
+            _usbWatchCancellation = null;
+            IsWatchingUsb = false;
+            UsbWatchStatus = "USB watcher stopped. No tests were run.";
+        }
+    }
+
+    private void AppendUsbWatchResult(string message)
+    {
+        UsbWatchResults.Add($"{DateTimeOffset.Now:HH:mm:ss}  {message}");
+        while (UsbWatchResults.Count > 100) UsbWatchResults.RemoveAt(0);
     }
 
     private async Task CheckRokuAsync()
