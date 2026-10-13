@@ -67,7 +67,7 @@ hardware evidence, and a `PASS` from the simulator is not evidence that a produc
 
 ## USB devices and automatic discovery
 
-The CLI can list USB descriptors or watch for connection/removal events:
+The Device page also has **Start USB watcher / Stop watcher** controls that poll for attach/removal events while the app is open. The watcher is discovery-only and never connects to a device or starts tests automatically. The CLI can also list USB descriptors or watch for connection/removal events:
 
 ```powershell
 python launcher.py devices
