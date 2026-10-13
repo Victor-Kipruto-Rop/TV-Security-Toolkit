@@ -29,7 +29,12 @@ public static class SecurityConstants
     public static bool IsStateChanging(string call) => !ReadOnlyCommands.Contains(call);
 
     /// <summary>JSON keys whose values are replaced with [redacted] in evidence.</summary>
-    public static readonly HashSet<string> RedactedKeys = new() { "sig", "key", "secret", "password", "mac" };
+    public static readonly HashSet<string> RedactedKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "sig", "key", "secret", "password", "mac", "macAddress", "device_id", "deviceId",
+        "serial", "serialNumber", "hardware", "model", "region", "fw_version",
+        "firmwareVersion", "host", "ip", "ipAddress"
+    };
 
     /// <summary>
     /// JSON keys whose values are device identity data. These are masked in operational logs so
