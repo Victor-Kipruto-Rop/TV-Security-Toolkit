@@ -1,4 +1,4 @@
-import argparse, json, logging, sys
+import argparse, json, logging, sys, time
 from pathlib import Path
 from . import VERSION
 from .config import Config
@@ -17,9 +17,57 @@ def _filter(tests, a):
 
 def _hex(v): return None if v is None else int(v, 0)
 
-def cmd_devices(a):
+def _usb_snapshot():
     from .device.transport import list_usb
-    for d in list_usb(): print(f"{d['vid']}:{d['pid']}  {d['manufacturer']} {d['product']}  serial={d['serial']}")
+    devices = list_usb()
+    # A USB descriptor is useful for discovery, but is not proof of device identity.
+    return {
+        (d["vid"], d["pid"], d.get("serial", "")): d
+        for d in devices
+    }
+
+def _print_usb_device(d, prefix=""):
+    print(
+        f"{prefix}{d['vid']}:{d['pid']}  "
+        f"{d.get('manufacturer', '')} {d.get('product', '')}  "
+        f"serial={d.get('serial', '')}"
+    )
+
+def cmd_devices(a):
+    try:
+        current = _usb_snapshot()
+    except SystemExit as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+
+    if not a.watch:
+        if not current:
+            print("No USB devices found.")
+            return 0
+        for d in current.values():
+            _print_usb_device(d)
+        print("Discovery only: USB descriptors do not authenticate a TV or prove protocol compatibility.")
+        return 0
+
+    print("Watching USB connections. No tests will run automatically. Press Ctrl+C to stop.")
+    for d in current.values():
+        _print_usb_device(d, "[present] ")
+    try:
+        while True:
+            time.sleep(a.interval)
+            try:
+                updated = _usb_snapshot()
+            except SystemExit as exc:
+                print(f"warning: USB discovery temporarily unavailable: {exc}", file=sys.stderr)
+                continue
+            for key in updated.keys() - current.keys():
+                _print_usb_device(updated[key], "[attached] ")
+            for key in current.keys() - updated.keys():
+                _print_usb_device(current[key], "[removed] ")
+            current = updated
+    except KeyboardInterrupt:
+        print("\nUSB discovery stopped.")
+        return 0
 
 def cmd_list(a):
     cfg = Config(ROOT, a.profile); pol = PolicyEngine(cfg)
@@ -45,14 +93,11 @@ def cmd_run(a):
     cfg = Config(ROOT, a.profile)
     lc = cfg.logging
     log_path = ROOT / lc["file"]
-    # The log directory may be absent in a fresh checkout or on read-only removable media; create it
-    # rather than failing the run, and fall back to stderr if the file still cannot be opened.
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
         logging.basicConfig(filename=log_path, level=lc["level"], format=lc["format"])
     except OSError as exc:
-        logging.basicConfig(level=lc["level"], format=lc["format"],
-                            stream=sys.stderr)
+        logging.basicConfig(level=lc["level"], format=lc["format"], stream=sys.stderr)
         print(f"warning: could not open log file {log_path}: {exc}", file=sys.stderr)
     flaws = [f for f in (a.flaw or "").split(",") if f]
     usb = dict(vid=_hex(a.vid), pid=_hex(a.pid), serial=a.serial)
@@ -86,7 +131,7 @@ def cmd_gen_payloads(a):
     wj("invalid/invalid-manifest.json", {"manifest": {"model": S.MODEL}, "body": "00", "sig": "00"})
     wb("corrupted/corrupted-firmware.pkg", build_package(key, S.MODEL, S.HW, "1.5.0", tamper="hash"))
     wb("corrupted/corrupted-manifest.json", build_package(key, S.MODEL, S.HW, "1.5.0", tamper="truncate"))
-    wj("expired/expired-entitlement.json", build_entitlement(key, S.DEVICE_ID, T0 - 90 * 86400, T0 - 60, "payload-expired-0001"))
+    wb("expired/expired-entitlement.json", build_entitlement(key, S.DEVICE_ID, T0 - 90 * 86400, T0 - 60, "payload-expired-0001"))
     wb("incompatible/wrong-model.pkg", build_package(key, "OTHER-TV-32", S.HW, "1.5.0"))
     wb("incompatible/wrong-hardware.pkg", build_package(key, S.MODEL, "rev-Z", "1.5.0"))
     print("payloads written")
@@ -105,7 +150,14 @@ def main(argv=None):
     p.add_argument("--device", help="sim | usb | usb-loopback | generic")
     p.add_argument("--vid"); p.add_argument("--pid"); p.add_argument("--serial"); p.add_argument("--flaw", help="comma list (sim only)")
     p.add_argument("--report", help="html,json"); p.set_defaults(fn=cmd_run)
-    sub.add_parser("devices", help="list attached USB devices").set_defaults(fn=cmd_devices)
+    p = sub.add_parser("devices", help="list or watch attached USB devices (discovery only)")
+    p.add_argument("--watch", action="store_true", help="poll for USB attach/remove events; never runs tests")
+    p.add_argument("--interval", type=float, default=1.0, help="watch polling interval in seconds (0.5 to 60)")
+    p.set_defaults(fn=cmd_devices)
     sub.add_parser("gen-payloads").set_defaults(fn=cmd_gen_payloads)
     p = sub.add_parser("validate-package"); p.add_argument("file"); p.set_defaults(fn=cmd_validate_pkg)
-    a = ap.parse_args(argv); return a.fn(a) or 0
+    a = ap.parse_args(argv)
+    if a.cmd == "devices" and not 0.5 <= a.interval <= 60:
+        ap.error("--interval must be between 0.5 and 60 seconds")
+    result = a.fn(a)
+    return 0 if result is None else result
