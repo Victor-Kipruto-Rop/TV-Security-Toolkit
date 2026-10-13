@@ -131,7 +131,7 @@ This is **tamper evidence, not tamper proofing**. The chain is an unkeyed hash, 
 ## 17. Secrets management - DONE (with one accepted exposure)
 
 - No credentials in source, scripts, or config beyond the deliberate lab key. The release workflow reads `SIGNING_CERTIFICATE_BASE64` / `SIGNING_CERTIFICATE_PASSWORD` from GitHub secrets, writes the certificate to a file, and explicitly clears both environment variables afterwards. Workflow permissions are least-privilege (`contents: read`, plus `security-events: write` only for the CodeQL workflow).
-- **Accepted exposure:** `labSigningKeyHex` remains world-readable in the public repository and is safe only for simulator fixtures. The current PR adds a fail-closed guard in `ApplicationService.RunAsync` so `production-readonly` cannot run with the bundled lab key.
+- **Accepted exposure:** `labSigningKeyHex` remains world-readable in the public repository and is safe only for simulator fixtures. The current PR adds fail-closed guards in .NET `ApplicationService.RunAsync` and the Python CLI so neither entry point runs the `production-readonly` profile with the bundled lab key.
 - **Remaining:** the guard is a profile gate, not a production key-management or device-authentication implementation. Production trust material and a vendor trust model are still required; never reuse the lab key for real devices, evidence attestation, or package signing.
 
 ## 18. Logging/observability - PARTIAL
