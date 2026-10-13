@@ -50,7 +50,7 @@ public sealed partial class IdentityRedactingSink : ILogEventSink
         if (string.IsNullOrEmpty(text)) return text;
 
         // "device_id": "SIM-0001"  ->  "device_id": "[redacted]"
-        var result = QuotedValuePattern().Replace(text, m => m.Groups[1].Value + "\\\"" + Mask + "\\\"");
+        var result = QuotedValuePattern().Replace(text, m => m.Groups[1].Value + '"' + Mask + '"');
 
         // Bare SIM-xxxx style identifiers that are not already masked.
         result = DeviceIdPattern().Replace(result, Mask);
