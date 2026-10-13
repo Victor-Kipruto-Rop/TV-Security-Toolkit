@@ -77,7 +77,7 @@ $createdDestination = $false
 try {
     New-Item -ItemType Directory -Path $destination -ErrorAction Stop | Out-Null
     $createdDestination = $true
-    Copy-Item -Path (Join-Path $package "*") -Destination $destination -Recurse -Force:$false
+    Copy-Item -Path (Join-Path $package "*") -Destination $destination -Recurse -Force
 
     $copiedFiles = @(Get-ChildItem -LiteralPath $destination -Recurse -File -Force)
     if ($copiedFiles.Count -ne $sourceFiles.Count) {
@@ -85,7 +85,7 @@ try {
     }
 
     foreach ($sourceFile in $sourceFiles) {
-        $relative = $sourceFile.FullName.Substring($package.Length).TrimStart("\", "/")
+        $relative = $sourceFile.FullName.Substring($package.Length).TrimStart([char[]]@('\', '/'))
         $targetFile = Join-Path $destination $relative
         if (-not (Test-Path -LiteralPath $targetFile -PathType Leaf)) {
             throw "Copy verification failed; missing file: $relative"
