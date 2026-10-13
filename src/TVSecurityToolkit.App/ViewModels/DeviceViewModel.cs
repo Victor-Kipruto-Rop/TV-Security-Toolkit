@@ -141,8 +141,9 @@ public sealed class DeviceViewModel : ViewModelBase
                 {
                     break;
                 }
-                catch (Exception e) when (e is DllNotFoundException or TypeInitializationException or UnauthorizedAccessException or IOException)
+                catch (Exception e)
                 {
+                    Log.Warning(e, "USB discovery poll failed; the watcher will retry");
                     UsbWatchStatus = $"USB discovery unavailable ({e.GetType().Name}). Check the USB driver/runtime.";
                     await Task.Delay(TimeSpan.FromSeconds(2), cancellation.Token);
                     continue;

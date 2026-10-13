@@ -299,6 +299,29 @@ class UsbDiscoveryCliTests(unittest.TestCase):
 
 
 
+    def test_devices_reports_unexpected_discovery_error_without_traceback(self):
+        stderr = io.StringIO()
+        with patch("toolkit.device.transport.list_usb", side_effect=OSError("USB runtime unavailable")), contextlib.redirect_stderr(stderr):
+            result = main(["devices"])
+        self.assertEqual(2, result)
+        self.assertIn("USB discovery failed (OSError)", stderr.getvalue())
+        self.assertIn("USB runtime unavailable", stderr.getvalue())
+
+    def test_usb_watch_continues_after_transient_discovery_error(self):
+        first = {("1111", "2222", ""): {"vid": "1111", "pid": "2222", "manufacturer": "Lab", "product": "Probe", "serial": ""}}
+        snapshots = iter([first, RuntimeError("temporary USB error"), first])
+        def snapshot():
+            value = next(snapshots)
+            if isinstance(value, Exception):
+                raise value
+            return value
+        with patch("toolkit.cli._usb_snapshot", side_effect=snapshot), patch("toolkit.cli.time.sleep", side_effect=[None, None, KeyboardInterrupt()]), contextlib.redirect_stdout(io.StringIO()) as output, contextlib.redirect_stderr(io.StringIO()) as errors:
+            result = main(["devices", "--watch", "--interval", "0.5"])
+        self.assertEqual(0, result)
+        self.assertIn("warning: USB discovery temporarily unavailable (RuntimeError)", errors.getvalue())
+        self.assertIn("USB discovery stopped", output.getvalue())
+
+
 class UsbInstallerSafetyContractTests(unittest.TestCase):
     """Keep important fail-safe guarantees visible in the portable-drive installer."""
 

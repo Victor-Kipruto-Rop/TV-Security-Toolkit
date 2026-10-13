@@ -99,3 +99,11 @@ The install script refuses to overwrite an existing destination, checks that Win
 ## Layout
 See docs/architecture.md. Payloads in `payloads/` are lab-signed with the key in `config/security-policy.json`
 (simulator only; never put production keys there).
+
+
+## Contributor and release validation
+
+- [Local quality gates](docs/quality-gates.md) — commands for Python tests, .NET build/tests, and USB packaging.
+- [Release process](docs/release-process.md) — trusted signing, release prerequisites, and checksum verification.
+- [Security reporting](SECURITY.md) — responsible vulnerability reporting.
+- [CI troubleshooting](docs/ci-troubleshooting.md) — what to check when jobs fail before executing their first step.

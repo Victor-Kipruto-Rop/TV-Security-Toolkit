@@ -6,12 +6,16 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   dotnet:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Runner diagnostics
         shell: pwsh
@@ -25,7 +29,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
           global-json-file: global.json
       - name: Restore
         run: dotnet restore TV-Security-Toolkit.sln
@@ -33,17 +36,16 @@ jobs:
         run: dotnet test TV-Security-Toolkit.sln --configuration Release --no-restore
 
   python:
-    runs-on: windows-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Runner diagnostics
-        shell: pwsh
+        shell: bash
         run: |
-          Write-Output "RUNNER_DIAGNOSTIC_START"
-          Write-Output "RUNNER_OS=$env:RUNNER_OS"
-          Write-Output "RUNNER_ARCH=$env:RUNNER_ARCH"
-          Write-Output "IMAGE_OS=$env:ImageOS"
-          Write-Output "POWERSHELL_VERSION=$($PSVersionTable.PSVersion)"
-          Get-Date -Format o
+          echo "RUNNER_DIAGNOSTIC_START"
+          echo "RUNNER_OS=$RUNNER_OS"
+          echo "RUNNER_ARCH=$RUNNER_ARCH"
+          echo "IMAGE_OS=$ImageOS"
+          date --iso-8601=seconds
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
