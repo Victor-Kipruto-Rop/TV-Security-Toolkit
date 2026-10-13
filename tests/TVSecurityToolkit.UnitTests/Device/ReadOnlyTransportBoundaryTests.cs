@@ -26,7 +26,7 @@ public sealed class ReadOnlyTransportBoundaryTests
     public async Task Hardware_adapter_rejects_unallowlisted_command_even_if_client_policy_is_disabled()
     {
         var transport = new RecordingTransport();
-        await using var client = new ProtocolClient(transport);
+        var client = new ProtocolClient(transport);
         await using var adapter = new ProtocolDeviceAdapter(
             "test transport", client, enforceReadOnlyCommandAllowlist: true);
 
