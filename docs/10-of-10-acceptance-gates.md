@@ -17,7 +17,7 @@ As of 2026-10-13:
 |---|---|---|
 | Reproducible build and CI | Clean build, complete .NET/Python tests, dependency audit and CodeQL passing on the release commit | **Passing on the recorded commit; re-run for each release** |
 | Test reliability | Remove timing-sensitive flakes; demonstrate repeatable full-suite passes and integration coverage | **Open** |
-| Production trust boundary | Production execution refuses lab-only keys and simulator trust material; no fallback to lab credentials | **Profile-level lab-key guard added in PR #9; CI pending. Vendor authentication remains open** |
+| Production trust boundary | Production execution refuses lab-only keys and simulator trust material; no fallback to lab credentials | **.NET and Python entry points now block `production-readonly` with the public lab key in PR #9; CI pending. Vendor authentication remains open** |
 | Transport-level safety | Enforce authorization and read-only policy at the command boundary, not only during catalog selection | **Fail-closed read-only allowlist added at adapter/protocol-client boundaries by default; Python policy parity and no implicit provisioning added in PR #9. CI pending; device authentication/authorization remains open** |
 | Device identity and authentication | Vendor-documented trust model, verified identity, authorization before commands, negative tests for unknown/forged devices | **Blocked on vendor specification and authorized device** |
 | Protocol compatibility | Protocol framing, version/capability negotiation and error behavior validated against a named supported model/firmware | **Blocked on vendor specification and authorized device** |
