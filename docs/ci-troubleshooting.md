@@ -8,6 +8,18 @@
 
 The jobs now print a small, non-secret runner diagnostic before checkout. A log containing `RUNNER_DIAGNOSTIC_START` means a job started and reached its first step. If a job is marked failed but has no job log and no steps at all, source-code changes cannot fix that failure: GitHub has not provided an executable job environment, or the workflow was prevented from starting.
 
+## Latest observed incident (2026-10-13)
+
+The following runs were inspected and their failed jobs were retried:
+
+- Build: [38422242085](https://github.com/Victor-Kipruto-Rop/TV-Security-Toolkit/actions/runs/38422242085)
+- Test: [38422242005](https://github.com/Victor-Kipruto-Rop/TV-Security-Toolkit/actions/runs/38422242005)
+- Security: [38422242052](https://github.com/Victor-Kipruto-Rop/TV-Security-Toolkit/actions/runs/38422242052)
+
+After retry, the Build, both Test jobs, and both Security jobs still reported failure with `steps: null` and no log URL. Requests to download each job's logs returned `BlobNotFound`. Since the checked-in workflows have a runner-diagnostic command as their first step, this failure occurred before any configured shell command could report an application/build error. The exact cause is not exposed by the available job data, so do not assume it is a source-code defect or declare it fixed without a new run that reaches a step.
+
+Use the GitHub Actions run page to inspect the job summary and annotations. If the UI identifies a repository policy, account restriction, or hosted-runner provisioning issue, resolve that setting in GitHub first. Afterward dispatch/re-run the workflows and require normal step logs before treating CI as evidence.
+
 ## Triage jobs that fail before the first step
 
 1. Open **Repository → Actions** and confirm Actions are enabled for the repository.
