@@ -39,6 +39,9 @@ def cmd_devices(a):
     except SystemExit as exc:
         print(str(exc), file=sys.stderr)
         return 2
+    except Exception as exc:
+        print(f"USB discovery failed ({type(exc).__name__}): {exc}", file=sys.stderr)
+        return 2
 
     if not a.watch:
         if not current:
@@ -59,6 +62,12 @@ def cmd_devices(a):
                 updated = _usb_snapshot()
             except SystemExit as exc:
                 print(f"warning: USB discovery temporarily unavailable: {exc}", file=sys.stderr)
+                continue
+            except Exception as exc:
+                print(
+                    f"warning: USB discovery temporarily unavailable ({type(exc).__name__}): {exc}",
+                    file=sys.stderr,
+                )
                 continue
             for key in updated.keys() - current.keys():
                 _print_usb_device(updated[key], "[attached] ")
