@@ -59,7 +59,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
         version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         package_source = (ROOT / "toolkit" / "__init__.py").read_text(encoding="utf-8")
         props = (ROOT / "Directory.Build.props").read_text(encoding="utf-8")
-        python_match = re.search(r'^VERSION\\s*=\\s*["\\']([^"\\']+)["\\']', package_source, re.M)
+        python_match = re.search(r'VERSION.*?([0-9]+\.[0-9]+\.[0-9]+)', package_source)
         dotnet_match = re.search(r"<Version>([^<]+)</Version>", props)
         self.assertIsNotNone(python_match, "Could not read Python package version")
         self.assertIsNotNone(dotnet_match, "Could not read .NET version")
