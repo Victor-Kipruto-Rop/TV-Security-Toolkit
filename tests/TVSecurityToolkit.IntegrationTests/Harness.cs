@@ -29,7 +29,7 @@ public static class Harness
     {
         var sim = new SimulatedTvAdapter(Key, flaws);
         return viaProtocol
-            ? new ProtocolDeviceAdapter("loopback", new ProtocolClient(new LoopbackTransport(new ProtocolServer(sim)), 5000))
+            ? new ProtocolDeviceAdapter("loopback", new ProtocolClient(new LoopbackTransport(new ProtocolServer(sim)), 5000, enforceReadOnlyCommandAllowlist: false), enforceReadOnlyCommandAllowlist: false)
             : sim;
     }
 
