@@ -42,7 +42,7 @@ public sealed class ReadOnlyTransportBoundaryTests
     public async Task Hardware_adapter_still_rejects_unknown_protocol_commands()
     {
         var transport = new RecordingTransport();
-        await using var client = new ProtocolClient(transport);
+        var client = new ProtocolClient(transport);
         await using var adapter = new ProtocolDeviceAdapter(
             "test transport", client, enforceReadOnlyCommandAllowlist: true);
 
