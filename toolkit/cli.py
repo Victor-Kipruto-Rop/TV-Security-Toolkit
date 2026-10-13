@@ -89,7 +89,16 @@ def cmd_list(a):
         print(f"{'run ' if ok else 'skip'} [{t['severity']:8}] {t['id']}" + ("" if ok else f"  ({why})"))
 
 def cmd_run(a):
-    requested_device = a.device or Config(ROOT, a.profile).toolkit.get("default_device", "sim")
+    cfg = Config(ROOT, a.profile)
+    if cfg.profile_name.casefold() == "production-readonly":
+        print(
+            "error: production-readonly execution is disabled while the bundled signing key is public and simulator-only; "
+            "vendor trust and authenticated device support must be implemented and verified first.",
+            file=sys.stderr,
+        )
+        return 2
+
+    requested_device = a.device or cfg.toolkit.get("default_device", "sim")
     if requested_device in ("usb", "generic"):
         print(
             "error: real-device security testing is disabled until a vendor-documented "
@@ -99,7 +108,6 @@ def cmd_run(a):
         )
         return 2
 
-    cfg = Config(ROOT, a.profile)
     lc = cfg.logging
     log_path = ROOT / lc["file"]
     try:

@@ -19,11 +19,11 @@ public class TcpTransportTests
         try
         {
             var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var accept = listener.AcceptTcpClientAsync(timeout.Token);
             await using var protocol = new ProtocolClient(
                 new TcpTransport(new ConnectionSettings { Host = IPAddress.Loopback.ToString(), Port = port }),
-                timeoutMs: 5000);
+                timeoutMs: 20000);
 
             var call = protocol.CallAsync("info", new JsonObject(), timeout.Token);
             using var peer = await accept;

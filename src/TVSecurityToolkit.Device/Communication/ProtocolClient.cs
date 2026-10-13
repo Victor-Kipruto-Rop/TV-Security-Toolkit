@@ -7,21 +7,45 @@ using TVSecurityToolkit.Device.Protocol;
 
 namespace TVSecurityToolkit.Device.Communication;
 
-/// <summary>Sends framed requests over a transport and reads the matching response.</summary>
+/// <summary>
+/// Sends framed requests over a transport and reads the matching response. Hardware callers can
+/// enable a transport-boundary read-only allowlist so commands cannot bypass catalog policy.
+/// </summary>
 public sealed class ProtocolClient : IAsyncDisposable
 {
     private readonly IDeviceTransport _transport;
     private readonly int _timeoutMs;
+    private readonly bool _enforceReadOnlyCommandAllowlist;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private readonly List<byte> _pending = new();
     private readonly byte[] _chunk = new byte[4096];
     private int _nextId;
     private bool _open;
 
-    public ProtocolClient(IDeviceTransport transport, int timeoutMs = 5000) { _transport = transport; _timeoutMs = timeoutMs; }
+    public ProtocolClient(
+        IDeviceTransport transport,
+        int timeoutMs = 5000,
+        bool enforceReadOnlyCommandAllowlist = true)
+    {
+        _transport = transport ?? throw new ArgumentNullException(nameof(transport));
+        if (timeoutMs <= 0) throw new ArgumentOutOfRangeException(nameof(timeoutMs));
+        _timeoutMs = timeoutMs;
+        _enforceReadOnlyCommandAllowlist = enforceReadOnlyCommandAllowlist;
+    }
 
     public async Task<JsonNode> CallAsync(string command, JsonObject args, CancellationToken ct)
     {
+        if (string.IsNullOrWhiteSpace(command))
+            throw new ProtocolException("command must not be empty");
+        if (args is null)
+            throw new ArgumentNullException(nameof(args));
+
+        // This check is intentionally before opening the transport. It is a final safety boundary,
+        // independent of the UI, catalog selection, and test-policy evaluation.
+        if (_enforceReadOnlyCommandAllowlist && SecurityConstants.IsStateChanging(command))
+            throw new DeviceException(
+                $"command '{command}' refused by the transport read-only policy; only explicitly allowlisted commands are permitted");
+
         await _gate.WaitAsync(ct);
         try
         {

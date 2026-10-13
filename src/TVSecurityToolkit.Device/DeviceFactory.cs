@@ -28,5 +28,8 @@ public static class DeviceFactory
     }
 
     private static IDeviceAdapter Wrap(IDeviceTransport t, ConnectionSettings s) =>
-        new ProtocolDeviceAdapter(t.Name, new ProtocolClient(t, s.TimeoutMs));
+        new ProtocolDeviceAdapter(
+            t.Name,
+            new ProtocolClient(t, s.TimeoutMs, enforceReadOnlyCommandAllowlist: true),
+            enforceReadOnlyCommandAllowlist: true);
 }

@@ -23,7 +23,7 @@
         <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
           <Ellipse Width="8" Height="8" Fill="{StaticResource AccentBrush}" Margin="0,0,8,0" />
-          <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" />
+          <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" AutomationProperties.Name="Toolkit status" AutomationProperties.LiveSetting="Polite" />
         </StackPanel>
         <TextBlock Grid.Column="1" Text="Simulator-first • physical-device tests gated" Style="{StaticResource Muted}" />
       </Grid>
@@ -37,7 +37,7 @@
             <TextBlock Text="SECURITY TOOLKIT" Foreground="{StaticResource OnDarkBrush}" FontSize="19" FontWeight="SemiBold" />
             <TextBlock Text="Assessment console" Foreground="{StaticResource SidebarMutedBrush}" FontSize="12" Margin="0,5,0,0" />
           </StackPanel>
-          <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" BorderThickness="0"
+          <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" AutomationProperties.Name="Main navigation" BorderThickness="0"
                    Background="Transparent" Padding="0">
             <ListBox.ItemTemplate>
               <DataTemplate>
@@ -83,7 +83,7 @@
           <StackPanel Margin="32,24,32,32">
             <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrushLight}" BorderThickness="1" CornerRadius="{StaticResource RadiusSm}" Padding="16" Margin="0,0,0,20">
               <StackPanel>
-                <TextBlock Text="Safety boundary" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,0,0,5" />
+                <TextBlock Text="Safety boundary" AutomationProperties.Name="Safety boundary" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,0,0,5" />
                 <TextBlock Text="Simulator and loopback results are synthetic. Device discovery does not authenticate a TV or prove compatibility. Physical-device test execution remains blocked until the exact model protocol and authentication are verified." TextWrapping="Wrap" Foreground="{StaticResource Muted}" />
               </StackPanel>
             </Border>

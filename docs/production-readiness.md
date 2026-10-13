@@ -125,14 +125,14 @@ This is **tamper evidence, not tamper proofing**. The chain is an unkeyed hash, 
 ## 16. Safety controls - PARTIAL (strong)
 
 - The strongest area of the codebase. The read-only `ReadOnlyCommands` allowlist is authoritative and fails closed: an unknown command is refused, so a newly added command cannot silently become permitted. `TestPolicyEngine` enforces it over catalog steps, and `PolicyTests` asserts the allowlist and the mutating-command denylist agree and that no catalog test depends on a state-changing call in a read-only profile.
-- **Gap:** the gate is a **catalog-time** policy decision. Nothing re-checks the allowlist at the transport boundary, so a call constructed outside catalog evaluation is not re-validated.
-- **Next:** add a defence-in-depth assertion in `ProtocolClient`/`RpcDeviceAdapter` for production profiles, and a test proving a direct non-catalog call is refused.
+- **Implemented in the current unvalidated PR:** hardware transports created by `DeviceFactory` enable the allowlist in both `ProtocolDeviceAdapter` and `ProtocolClient`, and both reject unclassified commands before opening/writing to the transport. Read-only enforcement is the default for direct protocol clients/adapters; simulator/loopback tests must explicitly opt out. The Python policy now uses the same allowlist and fails closed on unknown commands, with a parity regression test, and its runner skips implicit provisioning when state changes are disallowed.
+- **Remaining:** vendor device authentication and protocol verification are still absent. Keep real-device test execution disabled; do not treat this boundary check as device identity authentication.
 
 ## 17. Secrets management - DONE (with one accepted exposure)
 
 - No credentials in source, scripts, or config beyond the deliberate lab key. The release workflow reads `SIGNING_CERTIFICATE_BASE64` / `SIGNING_CERTIFICATE_PASSWORD` from GitHub secrets, writes the certificate to a file, and explicitly clears both environment variables afterwards. Workflow permissions are least-privilege (`contents: read`, plus `security-events: write` only for the CodeQL workflow).
-- **Accepted exposure:** `labSigningKeyHex` is now world-readable in a public repository. Safe only while it signs simulator payloads. The production profile does **not** currently refuse to load a lab key, so that separation is unenforced.
-- **Next:** make the production profile fail closed when a lab key is configured, and rotate the lab key if it is ever reused for anything real.
+- **Accepted exposure:** `labSigningKeyHex` remains world-readable in the public repository and is safe only for simulator fixtures. The current PR adds fail-closed guards in .NET `ApplicationService.RunAsync` and the Python CLI so neither entry point runs the `production-readonly` profile with the bundled lab key.
+- **Remaining:** the guard is a profile gate, not a production key-management or device-authentication implementation. Production trust material and a vendor trust model are still required; never reuse the lab key for real devices, evidence attestation, or package signing.
 
 ## 18. Logging/observability - PARTIAL
 
@@ -187,11 +187,11 @@ This is **tamper evidence, not tamper proofing**. The chain is an unkeyed hash, 
 - **Gap:** none of it has ever executed, because of B2. No lock file, no action pinning to commit SHA, no Siggy, and no SBOM.
 - **Next:** B2, then pin actions to commit SHAs and add a lock file.
 
-## 27. Accessibility/UI - GAP
+## 27. Accessibility/UI - PARTIAL (code added; manual validation outstanding)
 
-**Zero `AutomationProperties` across all ten views and `MainWindow`.** No screen-reader names, no `AutomationProperties.Name` on interactive elements, no live-region announcements for test progress, and no evidence of contrast or focus-order verification. The design system was modernised and visually verified, but visual polish is not accessibility.
+A reusable `AutomationNameBehavior` is enabled on all ten views. It derives fallback automation names from explicit tooltips, tags, visible button content, and control names while preserving explicit names and leaving controls without a reliable label untouched. The main navigation is labelled and the toolkit status is exposed as a polite live region.
 
-- **Next (unblocked):** add `AutomationProperties.Name` to interactive controls, expose test progress as an accessible status, and verify keyboard traversal. Contained and additive.
+- **Remaining:** fallback naming cannot guarantee that every control has a meaningful name. Run a Windows UI Automation/screen-reader pass, verify keyboard-only traversal and focus visibility, check contrast, and add explicit names for any controls that remain unnamed. CI and source inspection cannot replace those manual checks.
 
 ## 28. Compliance/auditability - PARTIAL
 
@@ -212,6 +212,8 @@ This is **tamper evidence, not tamper proofing**. The chain is an unkeyed hash, 
 - **Next:** B1, then a full dry-run release on a clean VM.
 
 ## P0 status
+
+The status below is the last fully evidenced baseline; changes in the open security PR are not considered verified until its own Build, Test and Security workflows pass.
 
 The fifteen P0 items, and where each one actually stands.
 
