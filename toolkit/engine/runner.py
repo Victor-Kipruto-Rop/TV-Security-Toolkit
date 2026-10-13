@@ -86,7 +86,14 @@ class Runner:
         ev = EvidenceCollector(self.cfg.report.get("redact_keys", []))
         start, status, msg = time.time(), "pass", ""
         try:
-            self.dev.provision()
+            device_policy = getattr(self.cfg, "device_policy", {})
+            allow_state_changing = device_policy.get(
+                "allow_state_changing", device_policy.get("allowStateChanging", False)
+            )
+            # Provisioning mutates device state. Never do it implicitly in a read-only profile;
+            # a production-readonly target must already be in its approved baseline state.
+            if allow_state_changing:
+                self.dev.provision()
             for i, step in enumerate(t["steps"][: self.cfg.test_policy.get("max_steps_per_test", 20)]):
                 args = resolve(step.get("args", {}), self.dev, self.ctx)
                 res = getattr(self.dev, step["call"])(**args)
