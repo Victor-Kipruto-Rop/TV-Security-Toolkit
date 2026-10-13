@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Text.Json.Nodes;
 using TVSecurityToolkit.Core.Constants;
 using TVSecurityToolkit.Core.Enums;
@@ -13,6 +14,16 @@ public class PolicyTests
         Id = "x.y.z", Category = "payg", Title = "t", Severity = Severity.High,
         Steps = { new TestStep { Call = call, Args = new JsonObject() } }
     };
+
+    [Fact]
+    public void Security_command_policy_sets_are_frozen_and_case_sensitive()
+    {
+        Assert.IsType<FrozenSet<string>>(SecurityConstants.MutatingCommands);
+        Assert.IsType<FrozenSet<string>>(SecurityConstants.ReadOnlyCommands);
+        Assert.IsType<FrozenSet<string>>(SecurityConstants.IdentityKeys);
+        Assert.False(SecurityConstants.ReadOnlyCommands.Contains("STATE"));
+        Assert.True(SecurityConstants.ReadOnlyCommands.Contains("state"));
+    }
 
     [Fact]
     public void Readonly_environment_blocks_state_changing_tests()
