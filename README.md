@@ -36,6 +36,19 @@ for packaging and signing requirements.
   IP address or hostname on port 8060. It does not scan networks, follow redirects, or collect device identifiers.
   The returned model string is unverified, and this does not authenticate or authorize test execution.
 
+## TV platform compatibility discovery
+
+The read-only compatibility command reports whether official vendor tools are available and whether they report connected candidates:
+
+```bash
+python launcher.py compatibility
+python launcher.py compatibility --timeout 8
+```
+
+The discovery targets are Android TV / Google TV (`adb devices -l`), Samsung Tizen (`sdb devices`), and LG webOS (`ares-device --list`). Roku's existing .NET integration uses an explicitly entered host for a read-only ECP device-info request; it does not scan the network. Missing vendor tools, timeouts, and non-zero exits are reported as status results rather than proof of incompatibility.
+
+**Discovery is not authentication or compatibility verification.** Tool output is summarized to avoid writing raw device identifiers to the compatibility report. This command does not execute security tests against a TV and does not authorize hardware testing. The hardware security-test guard must remain closed until a vendor-supported diagnostic protocol, device identity/authentication model, and model/firmware-specific validation are available. Official developer workflows require explicit device setup and target-device testing; emulator or tool discovery alone is insufficient. See [Android device testing](https://developer.android.com/studio/run/device), [Samsung TV device testing](https://developer.samsung.com/smarttv/develop/getting-started/using-sdk/tv-device.html), [LG webOS developer mode](https://webostv.developer.lge.com/develop/getting-started/developer-mode-app), and [Roku ECP](https://developer.roku.com/dev/docs/external-control-api).
+
 ## Python CLI
 The Python launcher can list the catalog or run it against the built-in simulator:
 
