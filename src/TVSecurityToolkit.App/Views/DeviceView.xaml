@@ -28,6 +28,19 @@
       <Button Content="Discover" Command="{Binding DiscoverCommand}" Style="{StaticResource SecondaryButton}" />
     </WrapPanel>
     <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,4,0,14" />
+    <Border Style="{StaticResource Panel}" Margin="0,0,0,12">
+      <StackPanel>
+        <TextBlock Text="Automatic USB discovery" Style="{StaticResource SectionTitle}" />
+        <TextBlock Text="Watch for USB attach/removal events. This only lists USB descriptors; it never connects to a device or runs tests automatically."
+                   Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,8" />
+        <WrapPanel>
+          <Button Content="Start USB watcher" Command="{Binding StartUsbWatchCommand}" IsEnabled="{Binding CanStartUsbWatch}" />
+          <Button Content="Stop watcher" Command="{Binding StopUsbWatchCommand}" IsEnabled="{Binding CanStopUsbWatch}" Style="{StaticResource SecondaryButton}" />
+        </WrapPanel>
+        <TextBlock Text="{Binding UsbWatchStatus}" TextWrapping="Wrap" Margin="0,8,0,4" />
+        <ListBox ItemsSource="{Binding UsbWatchResults}" MaxHeight="140" />
+      </StackPanel>
+    </Border>
     <ListBox ItemsSource="{Binding Discovered}" MaxHeight="160" />
     <Border Style="{StaticResource Panel}" Margin="0,16,0,0">
       <StackPanel>
