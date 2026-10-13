@@ -55,6 +55,12 @@ class RepositoryIntegrityTests(unittest.TestCase):
                 self.assertTrue(item["steps"], f"No steps for {item['id']}")
         self.assertEqual(len(ids), len(set(ids)), "Duplicate test IDs found in .NET catalog")
 
+    def test_python_project_metadata_declares_supported_runtime_and_entrypoint(self):
+        metadata = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        self.assertIn('requires-python = ">=3.10"', metadata)
+        self.assertIn('tv-security-toolkit = "toolkit.cli:main"', metadata)
+        self.assertIn('dynamic = ["version"]', metadata)
+
     def test_declared_versions_are_consistent(self):
         version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         package_source = (ROOT / "toolkit" / "__init__.py").read_text(encoding="utf-8")
