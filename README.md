@@ -45,7 +45,7 @@ python launcher.py run --device sim --report json
 python -m unittest discover -s tests/python -v
 ```
 
-The Python CLI metadata is declared in `pyproject.toml`; the core simulator remains standard-library-only. USB support is an optional extra installed separately as documented below. The test suite also checks that Python and .NET catalog IDs and version declarations remain aligned.
+The core simulator remains standard-library-only. USB support is an optional extra installed separately as documented below. The test suite also checks that Python and .NET catalog IDs and version declarations remain aligned.
 
 The CLI uses `config/toolkit.json`'s `defaultEnvironment` when no profile is specified. Hardware runs should
 explicitly select the appropriate profile and device.
