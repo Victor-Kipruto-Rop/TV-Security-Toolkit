@@ -40,14 +40,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Runner diagnostics
-        shell: pwsh
+        shell: bash
         run: |
-          Write-Output "RUNNER_DIAGNOSTIC_START"
-          Write-Output "RUNNER_OS=$env:RUNNER_OS"
-          Write-Output "RUNNER_ARCH=$env:RUNNER_ARCH"
-          Write-Output "IMAGE_OS=$env:ImageOS"
-          Write-Output "POWERSHELL_VERSION=$($PSVersionTable.PSVersion)"
-          Get-Date -Format o
+          echo "RUNNER_DIAGNOSTIC_START"
+          echo "RUNNER_OS=$RUNNER_OS"
+          echo "RUNNER_ARCH=$RUNNER_ARCH"
+          echo "IMAGE_OS=$ImageOS"
+          date --iso-8601=seconds
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
