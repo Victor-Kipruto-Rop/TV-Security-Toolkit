@@ -40,3 +40,25 @@ For each model family, record manufacturer, model numbers, region, OS version, f
 ## What this change does not claim
 
 This change does not add new vendor transports, certify any hardware, enable security tests against real TVs, or prove production readiness. It makes the supported-target inventory explicit and testable while keeping unverified hardware gated.
+
+
+## USB connection discovery
+
+The Python CLI now supports `python launcher.py devices` to list attached USB descriptors and `python launcher.py devices --watch --interval 1` to poll for device additions/removals. This watcher is host-side discovery only; it does not identify a TV's operating system, authenticate the device, choose a vendor protocol, or run tests. Polling is not guaranteed to observe very short-lived connections.
+
+Portable package creation and verified copying to a removable drive are documented in [USB deployment](usb-deployment.md). This Windows x64 package is a host application, not an application that executes on a TV.
+
+## Evidence record required before claiming support
+
+A model-specific support claim must be backed by a reviewable record with these fields:
+
+- Manufacturer, exact model identifier, region, OS version, and firmware version.
+- Vendor documentation URL/version and approved diagnostic/developer-access process.
+- Transport and protocol framing version.
+- Authentication/authorization mechanism and how device identity is validated.
+- Discovery, capability-negotiation, read-only, timeout, disconnect, and malformed-response test results.
+- Hardware fixture and test date; redacted logs/report reference.
+- Explicit supported test categories, unsupported categories, and known limitations.
+- Reviewer and toolkit release version.
+
+Until this evidence exists, the platform remains `Discovery only`, `Model/OS identification required`, or `Unsupported` as listed above. Never infer compatibility solely from manufacturer name, VID/PID, a device listing, or a simulator result.
