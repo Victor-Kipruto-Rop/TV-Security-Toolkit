@@ -25,7 +25,7 @@ public sealed class ProtocolClient : IAsyncDisposable
     public ProtocolClient(
         IDeviceTransport transport,
         int timeoutMs = 5000,
-        bool enforceReadOnlyCommandAllowlist = false)
+        bool enforceReadOnlyCommandAllowlist = true)
     {
         _transport = transport ?? throw new ArgumentNullException(nameof(transport));
         if (timeoutMs <= 0) throw new ArgumentOutOfRangeException(nameof(timeoutMs));
