@@ -43,7 +43,7 @@ public sealed partial class IdentityRedactingSink : ILogEventSink
         var redactedRendered = Redact(rendered);
         var template = string.Equals(rendered, redactedRendered, StringComparison.Ordinal)
             ? sanitizedEvent.MessageTemplate
-            : new MessageTemplateParser().Parse(redactedRendered);
+            : new MessageTemplate(redactedRendered, new MessageTemplateToken[] { new TextToken(redactedRendered) });
 
         // Exception text can contain hostnames, serials, or device IDs as well. Preserve the
         // diagnostic text after redaction, but never forward the original exception if it leaks data.
