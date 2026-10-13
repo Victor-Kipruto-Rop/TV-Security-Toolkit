@@ -59,7 +59,7 @@ public sealed partial class IdentityRedactingSink : ILogEventSink
 
     [GeneratedRegex("(\"(?:" +
         "device_id|deviceId|serial|serialNumber|mac|macAddress|hardware|model|region" +
-        "|fw_version|firmwareVersion|host|ip|ipAddress)\"\\s*:\\s*)\"(?:[^\"\\\\]|\\\\.)*\"",
+        "|fw_version|firmwareVersion|version|host|ip|ipAddress)\"\\s*:\\s*)\"(?:[^\"\\\\]|\\\\.)*\"",
         RegexOptions.IgnoreCase)]
     private static partial Regex QuotedValuePattern();
 
