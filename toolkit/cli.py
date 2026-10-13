@@ -7,6 +7,7 @@ from .engine import Runner, load_tests
 from .formats import build_entitlement, build_package
 from .reporting import write_reports, summarize, exit_code
 from .security import PolicyEngine
+from .compatibility import discover_platforms
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -16,6 +17,16 @@ def _filter(tests, a):
     return tests
 
 def _hex(v): return None if v is None else int(v, 0)
+
+def cmd_compatibility(a):
+    """Read-only vendor-tool discovery; never authorizes hardware security tests."""
+    results = discover_platforms(timeout=a.timeout)
+    print(json.dumps({
+        "scope": "read-only discovery only",
+        "hardware_security_tests_authorized": False,
+        "platforms": [item.to_dict() for item in results],
+    }, indent=2))
+    return 0
 
 def cmd_devices(a):
     from .device.transport import list_usb
@@ -95,6 +106,9 @@ def main(argv=None):
     p.add_argument("--device", help="sim | usb | usb-loopback | generic")
     p.add_argument("--vid"); p.add_argument("--pid"); p.add_argument("--serial"); p.add_argument("--flaw", help="comma list (sim only)")
     p.add_argument("--report", help="html,json"); p.set_defaults(fn=cmd_run)
+    p = sub.add_parser("compatibility", help="read-only discovery of supported TV vendor tools")
+    p.add_argument("--timeout", type=float, default=5.0, help="per-tool timeout in seconds (default: 5)")
+    p.set_defaults(fn=cmd_compatibility)
     sub.add_parser("devices", help="list attached USB devices").set_defaults(fn=cmd_devices)
     sub.add_parser("gen-payloads").set_defaults(fn=cmd_gen_payloads)
     p = sub.add_parser("validate-package"); p.add_argument("file"); p.set_defaults(fn=cmd_validate_pkg)
