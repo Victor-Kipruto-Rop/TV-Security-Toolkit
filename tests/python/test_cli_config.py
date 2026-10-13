@@ -269,3 +269,34 @@ class CliConfigTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UsbDiscoveryCliTests(unittest.TestCase):
+    def test_devices_lists_attached_devices_without_running_tests(self):
+        device = {"vid": "1234", "pid": "abcd", "manufacturer": "Example", "product": "Lab adapter", "serial": "unit-1"}
+        with patch("toolkit.device.transport.list_usb", return_value=[device]), contextlib.redirect_stdout(io.StringIO()) as output:
+            result = main(["devices"])
+        self.assertEqual(0, result)
+        self.assertIn("1234:abcd", output.getvalue())
+        self.assertIn("Discovery only", output.getvalue())
+
+    def test_devices_empty_list_is_successful_and_clear(self):
+        with patch("toolkit.device.transport.list_usb", return_value=[]), contextlib.redirect_stdout(io.StringIO()) as output:
+            result = main(["devices"])
+        self.assertEqual(0, result)
+        self.assertIn("No USB devices found", output.getvalue())
+
+    def test_usb_watch_reports_attach_and_removal_without_running_tests(self):
+        first = {("1111", "2222", ""): {"vid": "1111", "pid": "2222", "manufacturer": "Lab", "product": "Probe", "serial": ""}}
+        second = {("3333", "4444", ""): {"vid": "3333", "pid": "4444", "manufacturer": "Lab", "product": "Probe 2", "serial": ""}}
+        snapshots = iter([first, second])
+        with patch("toolkit.cli._usb_snapshot", side_effect=lambda: next(snapshots)), patch("toolkit.cli.time.sleep", side_effect=[None, KeyboardInterrupt()]), contextlib.redirect_stdout(io.StringIO()) as output:
+            result = main(["devices", "--watch", "--interval", "0.5"])
+        self.assertEqual(0, result)
+        self.assertIn("[attached] 3333:4444", output.getvalue())
+        self.assertIn("[removed] 1111:2222", output.getvalue())
+        self.assertIn("No tests will run automatically", output.getvalue())
+
+    def test_usb_watch_interval_must_be_in_safe_range(self):
+        with self.assertRaises(SystemExit):
+            main(["devices", "--watch", "--interval", "0.1"])
