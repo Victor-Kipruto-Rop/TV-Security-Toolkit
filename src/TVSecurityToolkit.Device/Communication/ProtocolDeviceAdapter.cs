@@ -17,7 +17,7 @@ public sealed class ProtocolDeviceAdapter : RpcDeviceAdapter
     public ProtocolDeviceAdapter(
         string name,
         ProtocolClient client,
-        bool enforceReadOnlyCommandAllowlist = false)
+        bool enforceReadOnlyCommandAllowlist = true)
     {
         Name = name;
         _client = client ?? throw new ArgumentNullException(nameof(client));
