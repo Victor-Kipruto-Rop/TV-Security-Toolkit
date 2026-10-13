@@ -267,10 +267,6 @@ class CliConfigTests(unittest.TestCase):
         device.probe.assert_called_once()
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class UsbDiscoveryCliTests(unittest.TestCase):
     def test_devices_lists_attached_devices_without_running_tests(self):
         device = {"vid": "1234", "pid": "abcd", "manufacturer": "Example", "product": "Lab adapter", "serial": "unit-1"}
@@ -300,3 +296,30 @@ class UsbDiscoveryCliTests(unittest.TestCase):
     def test_usb_watch_interval_must_be_in_safe_range(self):
         with self.assertRaises(SystemExit):
             main(["devices", "--watch", "--interval", "0.1"])
+
+
+
+class UsbInstallerSafetyContractTests(unittest.TestCase):
+    """Keep important fail-safe guarantees visible in the portable-drive installer."""
+
+    def test_installer_refuses_existing_destination_and_checks_hashes(self):
+        script = (ROOT / "scripts" / "install-usb.ps1").read_text(encoding="utf-8")
+        self.assertIn('if (Test-Path -LiteralPath $destination)', script)
+        self.assertIn('Get-FileHash -LiteralPath $sourceFile.FullName -Algorithm SHA256', script)
+        self.assertIn('Get-FileHash -LiteralPath $targetFile -Algorithm SHA256', script)
+        self.assertIn('Copy verification failed', script)
+
+    def test_installer_has_explicit_override_for_fixed_usb_media(self):
+        script = (ROOT / "scripts" / "install-usb.ps1").read_text(encoding="utf-8")
+        self.assertIn('[switch]$AllowFixedDrive', script)
+        self.assertIn('if (-not $AllowFixedDrive)', script)
+        self.assertIn('Type COPY to continue', script)
+
+    def test_installer_rolls_back_partial_copy_and_never_autoruns(self):
+        script = (ROOT / "scripts" / "install-usb.ps1").read_text(encoding="utf-8")
+        self.assertIn('Remove-Item -LiteralPath $destination -Recurse -Force', script)
+        self.assertIn('Insertion will not auto-launch the application', script)
+
+
+if __name__ == "__main__":
+    unittest.main()

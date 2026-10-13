@@ -13,6 +13,15 @@ jobs:
   dotnet:
     runs-on: windows-latest
     steps:
+      - name: Runner diagnostics
+        shell: pwsh
+        run: |
+          Write-Output "RUNNER_DIAGNOSTIC_START"
+          Write-Output "RUNNER_OS=$env:RUNNER_OS"
+          Write-Output "RUNNER_ARCH=$env:RUNNER_ARCH"
+          Write-Output "IMAGE_OS=$env:ImageOS"
+          Write-Output "POWERSHELL_VERSION=$($PSVersionTable.PSVersion)"
+          Get-Date -Format o
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
@@ -26,6 +35,15 @@ jobs:
   python:
     runs-on: windows-latest
     steps:
+      - name: Runner diagnostics
+        shell: pwsh
+        run: |
+          Write-Output "RUNNER_DIAGNOSTIC_START"
+          Write-Output "RUNNER_OS=$env:RUNNER_OS"
+          Write-Output "RUNNER_ARCH=$env:RUNNER_ARCH"
+          Write-Output "IMAGE_OS=$env:ImageOS"
+          Write-Output "POWERSHELL_VERSION=$($PSVersionTable.PSVersion)"
+          Get-Date -Format o
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
