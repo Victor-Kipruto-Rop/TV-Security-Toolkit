@@ -194,6 +194,12 @@ public sealed class ApplicationService
     public async Task<SecurityReport> RunAsync(IEnumerable<string> ids, IProgress<TestResult>? progress, CancellationToken ct)
     {
         if (Device is null) throw new InvalidOperationException("Connect to a device first.");
+
+        // The shipped key is public and simulator-only. Refuse the production profile before
+        // selecting tests or sending commands; a profile label must never turn lab trust into
+        // production trust.
+        SecurityPolicy.EnsureProfileMayUseLabKey(EnvironmentName);
+
         if (DeviceInfo?.Connection != ConnectionType.Simulator)
             throw new InvalidOperationException(
                 "Security test execution is disabled for hardware transports until a vendor-authenticated TV diagnostic protocol and target compatibility profile are configured and verified. The current connection provides transport access only.");
