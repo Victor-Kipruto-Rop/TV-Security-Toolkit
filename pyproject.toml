@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tv-security-toolkit-cli"
+dynamic = ["version"]
+description = "Simulator-first defensive PAYG TV security test CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "See repository license terms" }
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Security",
+]
+
+[project.scripts]
+tv-security-toolkit = "toolkit.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "toolkit.VERSION" }
+
+[tool.setuptools.packages.find]
+include = ["toolkit*"]
