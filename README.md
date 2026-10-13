@@ -17,7 +17,7 @@ dotnet run --project src/TVSecurityToolkit.App
 The current repository passes its Debug unit and integration suites and builds in Release. These results exercise the
 simulator and protocol loopback; they do not establish compatibility with a production TV or its vendor authentication.
 See [the implementation audit](docs/implementation-audit.md) for validation boundaries and [the release process](docs/release-process.md)
-for packaging and signing requirements. See the [TV platform compatibility matrix](docs/tv-platform-compatibility.md) for the current evidence-based support status across Android/Google TV, Samsung Tizen, LG webOS, Roku TV, Hisense VIDAA, TCL, Sony BRAVIA, and other platforms.
+for packaging and signing requirements. See the [TV platform compatibility matrix](docs/tv-platform-compatibility.md) for the current evidence-based support status across Android/Google TV, Samsung Tizen, LG webOS, Roku TV, Hisense VIDAA, TCL, Sony BRAVIA, and other platforms. See [USB deployment](docs/usb-deployment.md) for portable packaging, removable-drive installation, and safe discovery.
 
 ## How it works
 - `test-catalog/**.json` define tests as steps (`call`, `args`, `expect`). `src/TVSecurityToolkit.Tests.*` hold one small
@@ -65,17 +65,34 @@ for a real serial/network adapter, but it must be written against the vendor's a
 the approved device authentication model; neither is available yet. No `generic` result may be reported as
 hardware evidence, and a `PASS` from the simulator is not evidence that a production TV rejects the same condition.
 
-## USB devices
-Plug the TV in, open **Device**, choose *Usb*, enter VID/PID and the bulk endpoint numbers (decimal; 0x81 = 129).
-On Windows the device needs a WinUSB/libusb driver (e.g. via Zadig). The wire protocol is an assumption: adapt
-`Device/Protocol/*` and the command mapping if your TV speaks something else.
+## USB devices and automatic discovery
+
+The Device page also has **Start USB watcher / Stop watcher** controls that poll for attach/removal events while the app is open. The watcher is discovery-only and never connects to a device or starts tests automatically. The CLI can also list USB descriptors or watch for connection/removal events:
+
+```powershell
+python launcher.py devices
+python launcher.py devices --watch --interval 1
+```
+
+The watcher polls the USB bus and reports additions/removals. It is discovery-only: it never starts tests automatically. The interval must be between 0.5 and 60 seconds. Install the optional dependency with `python -m pip install -r requirements-usb.txt`; on Windows, the native libusb backend/driver must also be available. Device VID/PID and descriptor strings are identification hints only, not authentication.
+
+The Windows application can use supported vendor discovery tools, but a USB cable does not guarantee a TV exposes a supported data interface. For real TV security-test execution, the exact model's vendor protocol and device authentication must be implemented and verified first. The CLI intentionally refuses `--device usb` and `--device generic` until that safety gate can be satisfied. Use `--device sim` or `--device usb-loopback` for simulator-only test execution.
 
 ## Portable USB launcher
-Create a self-contained Windows USB package with `scripts/package-usb.ps1`. After copying/extracting it to a USB
-drive, open the drive in File Explorer and double-click `Start-TV-Security-Toolkit.cmd`. Windows does not permit
-reliable automatic execution on USB insertion; `autorun.inf` sets only the drive label and icon. Reports from the
-portable package are written to its `reports` folder on the USB drive. The USB storage stick is for the Windows app
-and its output; the TV must communicate over a separately supported and authorized USB, serial, or network interface.
+
+Build the Windows x64 portable package on a Windows machine with the .NET 10 SDK:
+
+```powershell
+./scripts/package-usb.ps1 -OutputDirectory C:\release\TV-Security-Toolkit-USB
+```
+
+Copy and SHA-256-verify the completed package to a removable drive (replace `E` with its drive letter):
+
+```powershell
+./scripts/install-usb.ps1 -PackageDirectory C:\release\TV-Security-Toolkit-USB -DriveLetter E
+```
+
+The install script refuses to overwrite an existing destination, checks that Windows identifies the target as removable, checks free space, asks for confirmation, and verifies every copied file hash. To start it, open the USB drive and double-click `TV-Security-Toolkit-USB\Start-TV-Security-Toolkit.cmd`. Windows does not permit reliable automatic execution on USB insertion; `autorun.inf` only sets the drive label/icon. Reports from the portable package are written to its reports/evidence/logs folders. The USB storage stick carries the Windows app and its output; the TV must communicate through a separately supported and authorized interface.
 
 ## Layout
 See docs/architecture.md. Payloads in `payloads/` are lab-signed with the key in `config/security-policy.json`
