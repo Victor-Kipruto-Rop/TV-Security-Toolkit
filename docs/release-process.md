@@ -76,10 +76,22 @@ a defect, and confirms the preflight is doing its job.
 
 ## Signed GitHub release
 
-The `Release package` workflow runs on a `v*` tag or manual dispatch. It requires the protected repository secrets `SIGNING_CERTIFICATE_BASE64` (a base64-encoded PFX) and `SIGNING_CERTIFICATE_PASSWORD`. It signs every EXE and DLL with SHA-256 and a timestamp, verifies each signature, then uploads the USB archive. A tag creates a GitHub release only after those steps succeed.
+The `Release package` workflow runs on a `v*` tag or manual dispatch. It first restores, builds, and runs the .NET and Python test suites. It then requires the protected repository secrets `SIGNING_CERTIFICATE_BASE64` (a base64-encoded PFX) and `SIGNING_CERTIFICATE_PASSWORD`. It signs every EXE and DLL with SHA-256 and a timestamp, verifies each signature, packages the USB archive, and publishes a SHA-256 checksum. A tag creates a GitHub release only after all build, test, signing, and verification steps succeed. The release job requires `contents: write` to attach assets; other workflows use read-only permissions where possible.
 
 Configure a protected release environment and restrict who can create release tags. If signing secrets are unavailable, the workflow intentionally fails rather than publishing an unsigned package.
 
 ## Required release evidence
 
 Before marking the toolkit operational for a TV model, record a clean-machine installation test and an end-to-end run against an explicitly authorized development TV. Verify discovery, identity/authentication, protocol compatibility, test execution, evidence redaction, report generation, and the production-readonly policy. Do not automatically deploy firmware to production devices.
+
+
+## Verify a downloaded release
+
+Download both `TV-Security-Toolkit-USB.zip` and `SHA256SUMS.txt` from the same GitHub release. Run:
+
+```powershell
+Get-FileHash .\\TV-Security-Toolkit-USB.zip -Algorithm SHA256
+Get-Content .\\SHA256SUMS.txt
+```
+
+Compare the computed hash to the published checksum before extracting the archive. A checksum checks integrity against the published value; it does not replace Authenticode signature validation or prove the publisher's identity by itself.
