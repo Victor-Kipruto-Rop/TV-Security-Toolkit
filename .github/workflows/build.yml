@@ -43,3 +43,50 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python -m unittest discover -s tests/python -v
+      - name: USB package smoke test (unsigned CI artifact only)
+        shell: pwsh
+        run: |
+          $packagePath = Join-Path $env:RUNNER_TEMP "TV-Security-Toolkit-USB-smoke"
+          try {
+            ./scripts/package-usb.ps1 -OutputDirectory $packagePath -AllowUnsigned
+
+            $requiredFiles = @(
+              "TV-Security-Toolkit.exe",
+              "Start-TV-Security-Toolkit.cmd",
+              "autorun.inf",
+              "TV-Security-Toolkit.runtimeconfig.json",
+              "appsettings.json",
+              "VERSION",
+              "config/security-policy.json",
+              "profiles/production-readonly/device-policy.json",
+              "tests/payg/replay/replay-protection.test.json",
+              "test-catalog/payg/replay.json"
+            )
+            foreach ($relativePath in $requiredFiles) {
+              $candidate = Join-Path $packagePath $relativePath
+              if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) {
+                throw "USB package smoke test failed; missing required file: $relativePath"
+              }
+            }
+
+            $settings = Get-Content -LiteralPath (Join-Path $packagePath "appsettings.json") -Raw | ConvertFrom-Json
+            if ($settings.outputDir -ne ".") {
+              throw "USB package appsettings.json must use outputDir: ."
+            }
+
+            $excluded = @(Get-ChildItem -LiteralPath $packagePath -Recurse -Force |
+              Where-Object {
+                $_.FullName -match '[\\/](bin|obj|\.git|\.venv|__pycache__)([\\/]|$)' -or
+                $_.Extension -eq ".pyc"
+              })
+            if ($excluded.Count -gt 0) {
+              throw "USB package contains excluded build/cache content: $($excluded[0].FullName)"
+            }
+
+            Write-Output "USB package smoke test passed: required files, relative output path, and clean package layout verified."
+          }
+          finally {
+            if (Test-Path -LiteralPath $packagePath) {
+              Remove-Item -LiteralPath $packagePath -Recurse -Force
+            }
+          }
