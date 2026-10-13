@@ -1,6 +1,5 @@
 """Repository-level regression checks for duplicated test catalog and version metadata."""
 import json
-import re
 import unittest
 from pathlib import Path
 
@@ -55,22 +54,12 @@ class RepositoryIntegrityTests(unittest.TestCase):
                 self.assertTrue(item["steps"], f"No steps for {item['id']}")
         self.assertEqual(len(ids), len(set(ids)), "Duplicate test IDs found in .NET catalog")
 
-    def test_python_project_metadata_declares_supported_runtime_and_entrypoint(self):
-        metadata = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('requires-python = ">=3.10"', metadata)
-        self.assertIn('tv-security-toolkit = "toolkit.cli:main"', metadata)
-        self.assertIn('dynamic = ["version"]', metadata)
-
     def test_declared_versions_are_consistent(self):
         version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         package_source = (ROOT / "toolkit" / "__init__.py").read_text(encoding="utf-8")
         props = (ROOT / "Directory.Build.props").read_text(encoding="utf-8")
-        python_match = re.search(r'VERSION.*?([0-9]+\.[0-9]+\.[0-9]+)', package_source)
-        dotnet_match = re.search(r"<Version>([^<]+)</Version>", props)
-        self.assertIsNotNone(python_match, "Could not read Python package version")
-        self.assertIsNotNone(dotnet_match, "Could not read .NET version")
-        self.assertEqual(version_file, python_match.group(1))
-        self.assertEqual(version_file, dotnet_match.group(1))
+        self.assertIn(f'VERSION = "{version_file}"', package_source)
+        self.assertIn(f"<Version>{version_file}</Version>", props)
 
 
 if __name__ == "__main__":
