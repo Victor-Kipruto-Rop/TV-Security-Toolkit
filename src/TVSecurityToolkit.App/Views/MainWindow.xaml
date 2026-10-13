@@ -22,10 +22,10 @@
       <Grid>
         <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
-          <Ellipse Width="8" Height="8" Fill="{StaticResource SuccessBrush}" Margin="0,0,8,0" />
+          <Ellipse Width="8" Height="8" Fill="{StaticResource AccentBrush}" Margin="0,0,8,0" />
           <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" />
         </StackPanel>
-        <TextBlock Grid.Column="1" Text="Authorized assessment workspace" Style="{StaticResource Muted}" />
+        <TextBlock Grid.Column="1" Text="Simulator-first • physical-device tests gated" Style="{StaticResource Muted}" />
       </Grid>
     </Border>
     <Grid>
@@ -80,7 +80,15 @@
       </Border>
       <Border Grid.Column="1" Background="{StaticResource WindowBrush}">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
-          <ContentControl Content="{Binding CurrentViewModel}" Margin="32,28,32,32" />
+          <StackPanel Margin="32,24,32,32">
+            <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrushLight}" BorderThickness="1" CornerRadius="{StaticResource RadiusSm}" Padding="16" Margin="0,0,0,20">
+              <StackPanel>
+                <TextBlock Text="Safety boundary" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,0,0,5" />
+                <TextBlock Text="Simulator and loopback results are synthetic. Device discovery does not authenticate a TV or prove compatibility. Physical-device test execution remains blocked until the exact model protocol and authentication are verified." TextWrapping="Wrap" Foreground="{StaticResource Muted}" />
+              </StackPanel>
+            </Border>
+            <ContentControl Content="{Binding CurrentViewModel}" />
+          </StackPanel>
         </ScrollViewer>
       </Border>
     </Grid>

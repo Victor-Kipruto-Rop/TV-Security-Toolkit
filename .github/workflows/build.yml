@@ -34,6 +34,8 @@ jobs:
         run: dotnet restore TV-Security-Toolkit.sln
       - name: Build Release
         run: dotnet build TV-Security-Toolkit.sln --configuration Release --no-restore
+      - name: .NET unit and integration tests
+        run: dotnet test TV-Security-Toolkit.sln --configuration Release --no-build
       - name: Python CLI tests
         env:
           PYTHONDONTWRITEBYTECODE: "1"

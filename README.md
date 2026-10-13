@@ -17,7 +17,7 @@ dotnet run --project src/TVSecurityToolkit.App
 The current repository passes its Debug unit and integration suites and builds in Release. These results exercise the
 simulator and protocol loopback; they do not establish compatibility with a production TV or its vendor authentication.
 See [the implementation audit](docs/implementation-audit.md) for validation boundaries and [the release process](docs/release-process.md)
-for packaging and signing requirements. See the [TV platform compatibility matrix](docs/tv-platform-compatibility.md) for the current evidence-based support status across Android/Google TV, Samsung Tizen, LG webOS, Roku TV, Hisense VIDAA, TCL, Sony BRAVIA, and other platforms. See [USB deployment](docs/usb-deployment.md) for portable packaging, removable-drive installation, and safe discovery. See [GitHub Actions troubleshooting](docs/ci-troubleshooting.md) if a workflow fails before its first step.
+for packaging and signing requirements. See the [TV platform compatibility matrix](docs/tv-platform-compatibility.md) for the current evidence-based support status across Android/Google TV, Samsung Tizen, LG webOS, Roku TV, Hisense VIDAA, TCL, Sony BRAVIA, and other platforms. See [USB deployment](docs/usb-deployment.md) for portable packaging, removable-drive installation, and safe discovery. See [GitHub Actions troubleshooting](docs/ci-troubleshooting.md) if a workflow fails before its first step. Contributors can follow the repeatable [local quality gates](docs/quality-gates.md); repository security-reporting guidance is in [SECURITY.md](SECURITY.md).
 
 ## How it works
 - `test-catalog/**.json` define tests as steps (`call`, `args`, `expect`). `src/TVSecurityToolkit.Tests.*` hold one small
@@ -44,6 +44,8 @@ python launcher.py list
 python launcher.py run --device sim --report json
 python -m unittest discover -s tests/python -v
 ```
+
+The core simulator remains standard-library-only. USB support is an optional extra installed separately as documented below. The test suite also checks that Python and .NET catalog IDs and version declarations remain aligned.
 
 The CLI uses `config/toolkit.json`'s `defaultEnvironment` when no profile is specified. Hardware runs should
 explicitly select the appropriate profile and device.
