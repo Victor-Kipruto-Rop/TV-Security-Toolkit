@@ -195,8 +195,8 @@ class CliConfigTests(unittest.TestCase):
 
     def test_python_command_policy_matches_dotnet_constants(self):
         source = (ROOT / "src" / "TVSecurityToolkit.Core" / "Constants" / "SecurityConstants.cs").read_text(encoding="utf-8")
-        readonly_match = re.search(r"ReadOnlyCommands = new\\([^)]*\\)\\s*\\{(.*?)\\};", source, re.S)
-        mutating_match = re.search(r"MutatingCommands = new\\(\\)\\s*\\{(.*?)\\};", source, re.S)
+        readonly_match = re.search(r"ReadOnlyCommands = new\([^)]*\)\s*\{(.*?)\};", source, re.S)
+        mutating_match = re.search(r"MutatingCommands = new\(\)\s*\{(.*?)\};", source, re.S)
         self.assertIsNotNone(readonly_match, "could not locate the .NET read-only command allowlist")
         self.assertIsNotNone(mutating_match, "could not locate the .NET mutating command list")
         dotnet_readonly = set(re.findall(r'"([^"]+)"', readonly_match.group(1)))
