@@ -18,27 +18,49 @@ public sealed partial class IdentityRedactingSink : ILogEventSink
     private readonly ILogEventSink _inner;
     private const string Mask = "[redacted]";
 
-    public IdentityRedactingSink(ILogEventSink inner) => _inner = inner;
+    public IdentityRedactingSink(ILogEventSink inner) =>
+        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
 
     public void Emit(LogEvent logEvent)
     {
-        if (logEvent.Properties.Count == 0)
-        {
-            _inner.Emit(logEvent);
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(logEvent);
 
-        // Rebuild the event with identity-bearing properties masked. The message template itself is
-        // left intact so structured logging and downstream parsing keep working.
+        // Redact structured identity properties first, then render the event using those sanitized
+        // values. This catches both normal structured logging (e.g. {DeviceId}) and identifiers
+        // embedded directly in message text or JSON payloads.
         var map = new Dictionary<string, LogEventPropertyValue>(logEvent.Properties.Count, StringComparer.Ordinal);
         foreach (var kv in logEvent.Properties)
             map[kv.Key] = IsIdentityKey(kv.Key) ? new ScalarValue(Mask) : kv.Value;
 
-        _inner.Emit(new LogEvent(
+        var sanitizedEvent = new LogEvent(
             logEvent.Timestamp,
             logEvent.Level,
             logEvent.Exception,
             new MessageTemplate(logEvent.MessageTemplate.Text, logEvent.MessageTemplate.Tokens),
+            map.Select(kv => new LogEventProperty(kv.Key, kv.Value)));
+
+        var rendered = sanitizedEvent.RenderMessage();
+        var redactedRendered = Redact(rendered);
+        var template = string.Equals(rendered, redactedRendered, StringComparison.Ordinal)
+            ? sanitizedEvent.MessageTemplate
+            : new MessageTemplate(redactedRendered, new MessageTemplateToken[] { new TextToken(redactedRendered) });
+
+        // Exception text can contain hostnames, serials, or device IDs as well. Preserve the
+        // diagnostic text after redaction, but never forward the original exception if it leaks data.
+        var exception = logEvent.Exception;
+        if (exception is not null)
+        {
+            var exceptionText = exception.ToString();
+            var redactedExceptionText = Redact(exceptionText);
+            if (!string.Equals(exceptionText, redactedExceptionText, StringComparison.Ordinal))
+                exception = new RedactedException(redactedExceptionText);
+        }
+
+        _inner.Emit(new LogEvent(
+            logEvent.Timestamp,
+            logEvent.Level,
+            exception,
+            template,
             map.Select(kv => new LogEventProperty(kv.Key, kv.Value))));
     }
 
@@ -49,10 +71,10 @@ public sealed partial class IdentityRedactingSink : ILogEventSink
     {
         if (string.IsNullOrEmpty(text)) return text;
 
-        // "device_id": "SIM-0001"  ->  "device_id": "[redacted]"
+        // "device_id": "SIM-0001" -> "device_id": "[redacted]"
         var result = QuotedValuePattern().Replace(text, m => m.Groups[1].Value + '"' + Mask + '"');
 
-        // Bare SIM-xxxx style identifiers that are not already masked.
+        // Bare simulator identifiers that are not already masked.
         result = DeviceIdPattern().Replace(result, Mask);
         return result;
     }
@@ -65,6 +87,18 @@ public sealed partial class IdentityRedactingSink : ILogEventSink
 
     [GeneratedRegex("SIM-[A-Za-z0-9-]+", RegexOptions.None)]
     private static partial Regex DeviceIdPattern();
+
+    private sealed class RedactedException : Exception
+    {
+        private readonly string _safeText;
+
+        public RedactedException(string safeText) : base("Exception details redacted")
+        {
+            _safeText = safeText;
+        }
+
+        public override string ToString() => _safeText;
+    }
 }
 
 /// <summary>Loads config/security-policy.json (lab signing key and transport requirements).</summary>

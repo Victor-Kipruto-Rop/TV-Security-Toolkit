@@ -32,8 +32,15 @@ jobs:
           global-json-file: global.json
       - name: Restore
         run: dotnet restore TV-Security-Toolkit.sln
-      - name: Unit and integration tests
-        run: dotnet test TV-Security-Toolkit.sln --configuration Release --no-restore
+      - name: Repeated .NET unit and integration tests
+        shell: pwsh
+        run: |
+          $attempts = 3
+          for ($attempt = 1; $attempt -le $attempts; $attempt++) {
+            Write-Output "DOTNET_TEST_ATTEMPT=$attempt/$attempts"
+            dotnet test TV-Security-Toolkit.sln --configuration Release --no-restore
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
   python:
     runs-on: ubuntu-24.04
@@ -50,7 +57,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Python CLI tests
+      - name: Repeated Python CLI tests
         env:
           PYTHONDONTWRITEBYTECODE: "1"
-        run: python -m unittest discover -s tests/python -v
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            echo "PYTHON_TEST_ATTEMPT=$attempt/3"
+            python -m unittest discover -s tests/python -v || exit $?
+          done
