@@ -29,7 +29,7 @@ Replace `E` with the drive letter assigned to the USB flash drive:
 ./scripts/install-usb.ps1 -PackageDirectory C:\release\TV-Security-Toolkit-USB -DriveLetter E
 ```
 
-The installer verifies the launcher and executable, checks Windows' removable-drive classification and free space, refuses to overwrite an existing toolkit folder, asks for confirmation, copies the package, and compares SHA-256 hashes for every copied file. Review the destination before running the launcher. The hash comparison verifies the copy operation, not the publisher's identity; use package signature verification for that.
+The installer verifies the launcher and executable, checks drive health/readiness and free space, refuses to overwrite an existing toolkit folder, asks for confirmation, copies the package, and verifies the file count plus SHA-256 hashes for every copied file. If copying or verification fails, it removes only the destination folder created by that run so a partial install does not block a retry. Some flash drives are reported as Fixed by Windows; only after verifying the drive letter, rerun with `-AllowFixedDrive` to explicitly override that classification. This does not bypass the confirmation, free-space check, hash verification, or overwrite protection. Review the destination before running the launcher. The hash comparison verifies the copy operation, not the publisher's identity; use package signature verification for that.
 
 Launch by opening `E:\TV-Security-Toolkit-USB` and double-clicking `Start-TV-Security-Toolkit.cmd`. Reports are written under the package's configured reports/evidence/logs folders. Keep the drive physically secure and encrypt it if reports may contain sensitive information.
 
