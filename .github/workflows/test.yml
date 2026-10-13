@@ -6,12 +6,16 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   dotnet:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Runner diagnostics
         shell: pwsh
@@ -33,7 +37,7 @@ jobs:
         run: dotnet test TV-Security-Toolkit.sln --configuration Release --no-restore
 
   python:
-    runs-on: windows-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Runner diagnostics
         shell: pwsh
