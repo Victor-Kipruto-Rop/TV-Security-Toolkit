@@ -204,6 +204,31 @@ class CliConfigTests(unittest.TestCase):
         self.assertEqual(dotnet_readonly, READ_ONLY)
         self.assertEqual(dotnet_mutating, MUTATING)
 
+    def test_readonly_runner_does_not_implicitly_provision_device(self):
+        config = SimpleNamespace(
+            root=Path.cwd(),
+            security={"labSigningKeyHex": "00"},
+            lab_key_hex="00",
+            test_policy={},
+            report={},
+            device_policy={"allow_state_changing": False},
+        )
+        device = Mock()
+        policy = Mock()
+        policy.decide.return_value = (True, "")
+        tests = [{
+            "id": "readonly-baseline",
+            "category": "payg",
+            "title": "Read-only baseline",
+            "severity": "low",
+            "steps": [],
+        }]
+
+        results = Runner(config, device, policy).run(tests)
+
+        self.assertEqual("pass", results[0]["status"])
+        device.provision.assert_not_called()
+
     def test_list_uses_checked_in_default_environment(self):
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
