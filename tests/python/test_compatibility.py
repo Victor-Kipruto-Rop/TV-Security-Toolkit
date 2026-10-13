@@ -1,7 +1,11 @@
+import contextlib
+import io
+import json
 import unittest
 from unittest.mock import patch, Mock
 
 from toolkit.compatibility import _summarize, compatibility_matrix, discover_platforms
+from toolkit.cli import main
 
 
 class CompatibilitySummaryTests(unittest.TestCase):
@@ -31,6 +35,20 @@ class CompatibilitySummaryTests(unittest.TestCase):
     def test_non_positive_timeout_is_rejected(self):
         with self.assertRaises(ValueError):
             discover_platforms(timeout=0)
+
+    @patch("toolkit.cli.discover_platforms")
+    def test_cli_emits_json_and_never_authorizes_hardware_tests(self, discover):
+        from toolkit.compatibility import PlatformResult
+        discover.return_value = [
+            PlatformResult("Android TV / Google TV", "adb", "tool-missing", "adb missing")
+        ]
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            code = main(["compatibility"])
+        self.assertEqual(0, code)
+        payload = json.loads(output.getvalue())
+        self.assertFalse(payload["hardware_security_tests_authorized"])
+        self.assertTrue(payload["platforms"][0]["discovery_only"])
 
     @patch("toolkit.compatibility.shutil.which", return_value=None)
     def test_missing_vendor_tools_are_reported_without_execution(self, which):
