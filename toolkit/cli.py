@@ -32,6 +32,16 @@ def cmd_list(a):
         print(f"{'run ' if ok else 'skip'} [{t['severity']:8}] {t['id']}" + ("" if ok else f"  ({why})"))
 
 def cmd_run(a):
+    requested_device = a.device or Config(ROOT, a.profile).toolkit.get("default_device", "sim")
+    if requested_device in ("usb", "generic"):
+        print(
+            "error: real-device security testing is disabled until a vendor-documented "
+            "protocol and verified device-authentication method are implemented and validated "
+            "for the exact TV model. Use --device sim or --device usb-loopback for simulator-only tests.",
+            file=sys.stderr,
+        )
+        return 2
+
     cfg = Config(ROOT, a.profile)
     lc = cfg.logging
     log_path = ROOT / lc["file"]

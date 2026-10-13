@@ -17,7 +17,7 @@ dotnet run --project src/TVSecurityToolkit.App
 The current repository passes its Debug unit and integration suites and builds in Release. These results exercise the
 simulator and protocol loopback; they do not establish compatibility with a production TV or its vendor authentication.
 See [the implementation audit](docs/implementation-audit.md) for validation boundaries and [the release process](docs/release-process.md)
-for packaging and signing requirements.
+for packaging and signing requirements. See the [TV platform compatibility matrix](docs/tv-platform-compatibility.md) for the current evidence-based support status across Android/Google TV, Samsung Tizen, LG webOS, Roku TV, Hisense VIDAA, TCL, Sony BRAVIA, and other platforms.
 
 ## How it works
 - `test-catalog/**.json` define tests as steps (`call`, `args`, `expect`). `src/TVSecurityToolkit.Tests.*` hold one small
@@ -57,8 +57,8 @@ before relying on any result:
 | --- | --- | --- |
 | `sim` | Usable | Built-in simulator. Results are synthetic and prove nothing about a real TV. |
 | `usb-loopback` | Usable | Exercises the full USB protocol path against the simulator. No hardware required. |
-| `usb` | Unverified | Real USB transport. The wire protocol is an **assumption** — no authorized TV has been tested. |
-| `generic` | **Not implemented** | `toolkit/device/generic.py` is a skeleton that raises `NotImplementedError` by design. |
+| `usb` | **Blocked by default** | Real USB security-test execution is refused until the exact model's vendor protocol and device authentication are implemented and verified. |
+| `generic` | **Blocked / not implemented** | The generic hardware adapter is a skeleton and hardware runs are refused by the CLI. |
 
 `generic` deliberately fails closed rather than returning fabricated results. It is the correct extension point
 for a real serial/network adapter, but it must be written against the vendor's actual protocol specification and
