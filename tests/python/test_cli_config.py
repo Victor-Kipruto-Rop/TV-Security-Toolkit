@@ -12,7 +12,7 @@ from unittest.mock import Mock, patch
 from toolkit.cli import main
 from toolkit.config import Config
 from toolkit.engine import Runner
-from toolkit.security.policy import PolicyEngine
+from toolkit.security.policy import PolicyEngine, READ_ONLY, MUTATING
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -172,7 +172,37 @@ class CliConfigTests(unittest.TestCase):
         )
 
         self.assertFalse(allowed)
-        self.assertEqual(reason, "state-changing test blocked by device policy")
+        self.assertEqual(reason, "state-changing or unclassified command blocked by device policy")
+
+    def test_unknown_command_fails_closed_in_readonly_policy(self):
+        policy = PolicyEngine(SimpleNamespace(profile_allowed={}, device_policy={}))
+        allowed, reason = policy.decide({
+            "id": "unknown-command",
+            "category": "payg",
+            "steps": [{"call": "brand_new_command"}],
+        })
+        self.assertFalse(allowed)
+        self.assertIn("unclassified", reason)
+
+    def test_explicitly_readonly_command_is_allowed(self):
+        policy = PolicyEngine(SimpleNamespace(profile_allowed={}, device_policy={}))
+        allowed, reason = policy.decide({
+            "id": "read-only-command",
+            "category": "payg",
+            "steps": [{"call": "identity"}],
+        })
+        self.assertTrue(allowed, reason)
+
+    def test_python_command_policy_matches_dotnet_constants(self):
+        source = (ROOT / "src" / "TVSecurityToolkit.Core" / "Constants" / "SecurityConstants.cs").read_text(encoding="utf-8")
+        readonly_match = re.search(r"ReadOnlyCommands = new\\([^)]*\\)\\s*\\{(.*?)\\};", source, re.S)
+        mutating_match = re.search(r"MutatingCommands = new\\(\\)\\s*\\{(.*?)\\};", source, re.S)
+        self.assertIsNotNone(readonly_match, "could not locate the .NET read-only command allowlist")
+        self.assertIsNotNone(mutating_match, "could not locate the .NET mutating command list")
+        dotnet_readonly = set(re.findall(r'"([^"]+)"', readonly_match.group(1)))
+        dotnet_mutating = set(re.findall(r'"([^"]+)"', mutating_match.group(1)))
+        self.assertEqual(dotnet_readonly, READ_ONLY)
+        self.assertEqual(dotnet_mutating, MUTATING)
 
     def test_list_uses_checked_in_default_environment(self):
         output = io.StringIO()
