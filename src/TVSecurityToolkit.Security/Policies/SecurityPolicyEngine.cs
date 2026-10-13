@@ -79,4 +79,19 @@ public sealed class SecurityPolicyEngine
         LabKey = CryptoUtilities.FromHex(doc.RootElement.GetProperty("labSigningKeyHex").GetString()!);
         MinTlsVersion = doc.RootElement.TryGetProperty("minTlsVersion", out var v) ? v.GetString() ?? "1.2" : "1.2";
     }
+
+    /// <summary>
+    /// Refuses to run a production-readonly profile with this configuration because its signing
+    /// material is explicitly a public, simulator-only lab key. A vendor trust root and verified
+    /// device-authentication implementation must be supplied before production execution is enabled.
+    /// </summary>
+    public void EnsureProfileMayUseLabKey(string profileName)
+    {
+        if (string.Equals(profileName, "production-readonly", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException(
+                "The production-readonly profile cannot run with the bundled simulator-only lab signing key. " +
+                "Configure a vendor-authenticated trust model and separate production trust material before enabling production assessments.");
+        }
+    }
 }
