@@ -8,13 +8,18 @@ on:
     - cron: "23 8 * * 1"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   dependency-audit:
-    runs-on: windows-latest
+    runs-on: windows-2022
+    permissions:
+      contents: read
     steps:
       - name: Runner diagnostics
         shell: pwsh
@@ -36,7 +41,10 @@ jobs:
         run: dotnet list TV-Security-Toolkit.sln package --vulnerable --include-transitive --no-restore
 
   codeql:
-    runs-on: windows-latest
+    runs-on: windows-2022
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Runner diagnostics
         shell: pwsh
