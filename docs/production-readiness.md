@@ -125,7 +125,7 @@ This is **tamper evidence, not tamper proofing**. The chain is an unkeyed hash, 
 ## 16. Safety controls - PARTIAL (strong)
 
 - The strongest area of the codebase. The read-only `ReadOnlyCommands` allowlist is authoritative and fails closed: an unknown command is refused, so a newly added command cannot silently become permitted. `TestPolicyEngine` enforces it over catalog steps, and `PolicyTests` asserts the allowlist and the mutating-command denylist agree and that no catalog test depends on a state-changing call in a read-only profile.
-- **Implemented in the current unvalidated PR:** hardware transports created by `DeviceFactory` enable the allowlist in both `ProtocolDeviceAdapter` and `ProtocolClient`; both reject unclassified commands before opening/writing to the transport. Regression tests cover direct client and adapter calls.
+- **Implemented in the current unvalidated PR:** hardware transports created by `DeviceFactory` enable the allowlist in both `ProtocolDeviceAdapter` and `ProtocolClient`, and both reject unclassified commands before opening/writing to the transport. Read-only enforcement is the default for direct protocol clients/adapters; simulator/loopback tests must explicitly opt out. The Python policy now uses the same allowlist and fails closed on unknown commands, with a parity regression test, and its runner skips implicit provisioning when state changes are disallowed.
 - **Remaining:** vendor device authentication and protocol verification are still absent. Keep real-device test execution disabled; do not treat this boundary check as device identity authentication.
 
 ## 17. Secrets management - DONE (with one accepted exposure)
