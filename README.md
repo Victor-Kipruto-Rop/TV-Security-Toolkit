@@ -17,7 +17,7 @@ dotnet run --project src/TVSecurityToolkit.App
 The current repository passes its Debug unit and integration suites and builds in Release. These results exercise the
 simulator and protocol loopback; they do not establish compatibility with a production TV or its vendor authentication.
 See [the implementation audit](docs/implementation-audit.md) for validation boundaries and [the release process](docs/release-process.md)
-for packaging and signing requirements. See the [TV platform compatibility matrix](docs/tv-platform-compatibility.md) for the current evidence-based support status across Android/Google TV, Samsung Tizen, LG webOS, Roku TV, Hisense VIDAA, TCL, Sony BRAVIA, and other platforms. See [USB deployment](docs/usb-deployment.md) for portable packaging, removable-drive installation, and safe discovery.
+for packaging and signing requirements. See the [TV platform compatibility matrix](docs/tv-platform-compatibility.md) for the current evidence-based support status across Android/Google TV, Samsung Tizen, LG webOS, Roku TV, Hisense VIDAA, TCL, Sony BRAVIA, and other platforms. See [USB deployment](docs/usb-deployment.md) for portable packaging, removable-drive installation, and safe discovery. See [GitHub Actions troubleshooting](docs/ci-troubleshooting.md) if a workflow fails before its first step.
 
 ## How it works
 - `test-catalog/**.json` define tests as steps (`call`, `args`, `expect`). `src/TVSecurityToolkit.Tests.*` hold one small
