@@ -90,7 +90,7 @@ def cmd_list(a):
 
 def cmd_run(a):
     cfg = Config(ROOT, a.profile)
-    if cfg.profile_name == "production-readonly":
+    if cfg.profile_name.casefold() == "production-readonly":
         print(
             "error: production-readonly execution is disabled while the bundled signing key is public and simulator-only; "
             "vendor trust and authenticated device support must be implemented and verified first.",
