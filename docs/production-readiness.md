@@ -43,6 +43,12 @@ B2 is the cheapest to clear and immediately restores CI evidence for this docume
 - **Gap:** the interface models *identity retrieval* but not *identity verification*. Nothing requires a device to prove who it is before commands are sent.
 - **Next:** extend the contract once B3 supplies a trust model. Do not invent an authentication scheme now.
 
+## TV platform compatibility discovery - PARTIAL
+
+A Python `compatibility` command now performs bounded, read-only discovery through the installed Android ADB, Samsung SDB, and LG webOS CLI tools. The .NET application retains its explicit-host, read-only Roku ECP information probe. Discovery results are deliberately not treated as authenticated identity, compatibility proof, or authorization to run security tests. See [the TV platform compatibility roadmap](tv-platform-compatibility.md).
+
+**Still blocked:** a vendor-supported diagnostic protocol, verified device authentication, capability negotiation, and repeatable physical-device tests for each supported model/firmware combination. The compatibility command is an initial discovery layer, not universal hardware support.
+
 ## 5. Real-device communication - BLOCKED
 
 - `ProtocolClient` implements framed request/response with a read deadline, a single-call gate, and header/CRC validation. `TcpTransport` returns 0 on timeout so `ReadExactAsync` can distinguish timeout from closure. `UsbTvAdapter` supports VID/PID/endpoint selection.
