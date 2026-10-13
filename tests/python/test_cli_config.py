@@ -253,6 +253,14 @@ class CliConfigTests(unittest.TestCase):
         self.assertEqual(result, 2)
         self.assertIn("verified device-authentication method", stderr.getvalue())
 
+    def test_production_readonly_run_fails_closed_with_public_lab_key(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            result = main(["run", "--profile", "production-readonly"])
+
+        self.assertEqual(result, 2)
+        self.assertIn("public and simulator-only", stderr.getvalue())
+
     def test_generic_hardware_run_fails_closed_until_supported_adapter_exists(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
